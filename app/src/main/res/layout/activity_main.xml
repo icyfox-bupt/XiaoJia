@@ -11,19 +11,22 @@
         android:layout_height="wrap_content" />
 
     <ImageView
-        android:layout_width="400dp"
-        android:layout_height="400dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
         android:id="@+id/imageView"
         android:background="#11ff0000"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
 
-    <ListView
-        android:layout_width="100dp"
-        android:layout_height="match_parent"
+    <com.hmammon.familyphoto.HorizontalListView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:widget="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
         android:id="@+id/listView"
         android:background="#1100ff00"
-        android:layout_alignTop="@+id/imageView"
-        android:layout_alignEnd="@+id/imageView" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

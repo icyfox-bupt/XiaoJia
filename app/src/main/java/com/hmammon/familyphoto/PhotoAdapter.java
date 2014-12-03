@@ -2,6 +2,7 @@ package com.hmammon.familyphoto;
 
 import android.app.Activity;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -9,24 +10,26 @@ import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.List;
+
 /**
  * Created by icyfox on 2014/12/3.
  */
 public class PhotoAdapter extends BaseAdapter {
 
-    Cursor c;
+    List<String> paths;
     Activity activity;
     ImageLoader loader;
 
-    public PhotoAdapter(Cursor c, Activity activity) {
-        this.c = c;
+    public PhotoAdapter(List<String> path, Activity activity) {
+        this.paths = path;
         this.activity = activity;
         loader = ImageLoader.getInstance();
     }
 
     @Override
     public int getCount() {
-        return c.getCount();
+        return paths.size();
     }
 
     @Override
@@ -52,9 +55,7 @@ public class PhotoAdapter extends BaseAdapter {
             vh = (ViewHolder) view.getTag();
         }
 
-        if (!c.move(i)) return view;
-
-        String path = "file:///" + c.getString(0);
+        String path = "file://" + paths.get(i);
 
         loader.displayImage(path, vh.iv);
 
