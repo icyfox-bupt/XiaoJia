@@ -4,6 +4,8 @@ import android.app.Application;
 import android.os.Environment;
 import android.telephony.TelephonyManager;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.io.File;
 
 /**
@@ -22,6 +24,9 @@ public class BaseApp extends Application {
         File savePath = new File(HttpHelper.SAVEPATH);
         if (!savePath.exists())
             savePath.mkdirs();
+
+        //初始化图片加载器
+        ImageLoader.getInstance().init(ImageHelper.config);
     }
 
     public static Application getInstance(){

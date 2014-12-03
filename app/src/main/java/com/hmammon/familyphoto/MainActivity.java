@@ -1,15 +1,22 @@
 package com.hmammon.familyphoto;
 
 import android.app.Activity;
-import android.os.Build;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import com.hmammon.familyphoto.db.PhotoContract;
+import com.hmammon.familyphoto.db.PhotoDbHelper;
 
 
 public class MainActivity extends Activity {
 
     private TextView tv;
+    private SQLiteDatabase db;
+    private ListView list;
+    private PhotoAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,11 +24,39 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         tv = (TextView)findViewById(R.id.tv);
-        tv.setText(Build.VERSION.SDK_INT + " \n" + getWindowManager().getDefaultDisplay().getWidth() + " \n" +
-         getWindowManager().getDefaultDisplay().getHeight()
+        PhotoDbHelper mHelper = new PhotoDbHelper(this);
+        db = mHelper.getWritableDatabase();
+        list = (ListView)findViewById(R.id.listView);
+
+        String[] projection = {
+                PhotoContract.COLUMN_NAME_PHOTO_PATH
+        };
+
+        String sortOrder = PhotoContract.COLUMN_NAME_PHOTO_TIME + " DESC";
+
+        Cursor c = db.query(
+                PhotoContract.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                sortOrder
         );
 
-        new GetNewPhoto().start();
+        c.moveToFirst();
+//        String path = "";
+//        while (c.moveToNext()){
+//            tv.append("\n" + c.getString(0));
+//            path = c.getString(0);
+//        }
+
+        db.close();
+
+        adapter = new PhotoAdapter(c, this);
+        list.setAdapter(adapter);
+
+       // new GetNewPhoto().start();
     }
 
 }
