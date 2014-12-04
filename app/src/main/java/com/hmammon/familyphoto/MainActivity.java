@@ -27,6 +27,7 @@ public class MainActivity extends Activity {
     private ImageView iv;
     private ArrayList<String> paths;
     private ImageLoader loader;
+    private boolean isOpen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +76,9 @@ public class MainActivity extends Activity {
         list.setAdapter(adapter);
         list.setOnItemClickListener(itListener);
 
-//       new GetNewPhoto().start();
+        iv.setOnClickListener(clickListener);
+
+       new GetNewPhoto().start();
     }
 
     private AdapterView.OnItemClickListener itListener = new AdapterView.OnItemClickListener() {
@@ -86,4 +89,27 @@ public class MainActivity extends Activity {
         }
     };
 
+    private View.OnClickListener clickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (isOpen) close();
+                    else open();
+        }
+    };
+
+    private void open(){
+        float y = list.getY();
+        int height = list.getMeasuredHeight();
+
+        list.animate().y(y + height);
+        isOpen = true;
+    }
+
+    private void close(){
+        float y = list.getY();
+        int height = list.getMeasuredHeight();
+
+        list.animate().y(y - height);
+        isOpen = false;
+    }
 }
