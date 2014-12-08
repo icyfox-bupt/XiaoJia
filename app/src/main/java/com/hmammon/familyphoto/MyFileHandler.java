@@ -89,7 +89,6 @@ public class MyFileHandler extends FileAsyncHttpResponseHandler {
 
     private void saveInDb(String path){
         ContentValues cv = new ContentValues();
-        cv.put(PhotoContract.COLUMN_NAME_PHOTO_ID, 1);
         cv.put(PhotoContract.COLUMN_NAME_PHOTO_PATH, path);
         cv.put(PhotoContract.COLUMN_NAME_PHOTO_TIME, System.currentTimeMillis()+"");
         db.insert(PhotoContract.TABLE_NAME,null, cv);

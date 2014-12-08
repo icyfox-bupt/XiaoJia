@@ -16,6 +16,7 @@ import com.hmammon.familyphoto.http.GetNewPhoto;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.logging.Handler;
 
 
 public class MainActivity extends Activity {
@@ -57,8 +58,6 @@ public class MainActivity extends Activity {
                 sortOrder
         );
 
-        c.moveToFirst();
-
         paths = new ArrayList<String>();
 
         while (c.moveToNext()){
@@ -77,6 +76,7 @@ public class MainActivity extends Activity {
         list.setOnItemClickListener(itListener);
 
         iv.setOnClickListener(clickListener);
+        loader.displayImage("file://" + paths.get(0), iv);
     }
 
     private AdapterView.OnItemClickListener itListener = new AdapterView.OnItemClickListener() {
@@ -110,4 +110,5 @@ public class MainActivity extends Activity {
         list.animate().y(y - height);
         isOpen = false;
     }
+
 }
