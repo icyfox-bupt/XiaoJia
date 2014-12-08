@@ -1,9 +1,9 @@
-package com.hmammon.familyphoto;
+package com.hmammon.familyphoto.http;
 
-import android.os.Environment;
 import android.util.Log;
 
-import com.loopj.android.http.FileAsyncHttpResponseHandler;
+import com.hmammon.familyphoto.BaseApp;
+import com.hmammon.familyphoto.MyFileHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -11,16 +11,7 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.logging.Handler;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 /**
  * Created by icyfox on 2014/11/30.
@@ -43,7 +34,9 @@ public class GetNewPhoto {
             Log.i("tag", response.toString());
 
             JSONArray datas = response.optJSONArray("data");
-            for (int i = 0; i < datas.length(); i++) {
+            if (datas.length() == 0) return;
+
+            for (int i = 0; i < 1; i++) {
                 JSONObject photoInfo = datas.optJSONObject(i);
 
                 RequestParams param = new RequestParams();
@@ -53,7 +46,10 @@ public class GetNewPhoto {
 
                 File file = new File(HttpHelper.SAVEPATH,
                         "pic" + System.currentTimeMillis() + ".zip");
+
+                String filename = photoInfo.optString("photoName");
                 MyFileHandler fileHandler = new MyFileHandler(file);
+                fileHandler.setFileName(filename);
 
                 HttpHelper.post(HttpHelper.GETZIP, param, fileHandler);
             }

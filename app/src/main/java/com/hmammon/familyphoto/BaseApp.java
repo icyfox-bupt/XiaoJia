@@ -2,9 +2,9 @@ package com.hmammon.familyphoto;
 
 import android.app.Application;
 import android.content.Intent;
-import android.os.Environment;
 import android.telephony.TelephonyManager;
 
+import com.hmammon.familyphoto.http.HttpHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;

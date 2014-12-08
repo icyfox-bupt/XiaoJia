@@ -1,4 +1,4 @@
-package com.hmammon.familyphoto;
+package com.hmammon.familyphoto.http;
 
 import android.os.Environment;
 import android.util.Log;

@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.hmammon.familyphoto.http.GetNewPhoto;
 import com.hmammon.familyphoto.receivers.TimeTickReceiver;
 
 public class FileService extends Service {
@@ -35,6 +36,7 @@ public class FileService extends Service {
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
+        Log.i("ser","被结束了!");
     }
 
     @Override
@@ -53,6 +55,7 @@ public class FileService extends Service {
         else {
             Log.i("down","开始下载啦！" + now + " " + last);
             sp.edit().putLong(LASTTIME,now).commit();
+            new GetNewPhoto().start();
         }
     }
 

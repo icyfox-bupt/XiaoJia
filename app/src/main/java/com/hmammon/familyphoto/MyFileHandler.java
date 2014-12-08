@@ -6,6 +6,8 @@ import android.util.Log;
 
 import com.hmammon.familyphoto.db.PhotoContract;
 import com.hmammon.familyphoto.db.PhotoDbHelper;
+import com.hmammon.familyphoto.http.HttpHelper;
+import com.hmammon.familyphoto.http.UpdatePhoto;
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -25,11 +27,16 @@ import java.util.zip.ZipFile;
 public class MyFileHandler extends FileAsyncHttpResponseHandler {
 
     private final SQLiteDatabase db;
+    private String fileName;
 
     public MyFileHandler(File file) {
         super(file);
         PhotoDbHelper dbhelper = new PhotoDbHelper(BaseApp.getInstance());
         db = dbhelper.getWritableDatabase();
+    }
+
+    public void setFileName(String name){
+        fileName = name;
     }
 
     @Override
@@ -70,6 +77,10 @@ public class MyFileHandler extends FileAsyncHttpResponseHandler {
 
             //删除临时的zip文件
             file.delete();
+
+            //向服务器发送删除请求
+            UpdatePhoto up = new UpdatePhoto(fileName);
+            up.start();
         } catch (IOException e) {
             Log.e("http","解压失败 " + file.getAbsolutePath());
         }

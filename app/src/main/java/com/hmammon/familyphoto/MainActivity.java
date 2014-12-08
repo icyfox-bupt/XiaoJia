@@ -8,11 +8,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hmammon.familyphoto.db.PhotoContract;
 import com.hmammon.familyphoto.db.PhotoDbHelper;
+import com.hmammon.familyphoto.http.GetNewPhoto;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
@@ -77,8 +77,6 @@ public class MainActivity extends Activity {
         list.setOnItemClickListener(itListener);
 
         iv.setOnClickListener(clickListener);
-
-       new GetNewPhoto().start();
     }
 
     private AdapterView.OnItemClickListener itListener = new AdapterView.OnItemClickListener() {

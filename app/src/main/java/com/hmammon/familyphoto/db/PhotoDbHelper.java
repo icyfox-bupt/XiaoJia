@@ -18,7 +18,7 @@ public class PhotoDbHelper extends SQLiteOpenHelper {
     private static final String COMMA_SEP = ",";
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + PhotoContract.TABLE_NAME + " (" +
-                    PhotoContract.COLUMN_NAME_PHOTO_ID + " INTEGER AUTO_INCREMENT," +
+                    PhotoContract.COLUMN_NAME_PHOTO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                     PhotoContract.COLUMN_NAME_PHOTO_PATH + TEXT_TYPE + COMMA_SEP +
                     PhotoContract.COLUMN_NAME_PHOTO_TIME + LONG_TYPE +
             ")";
