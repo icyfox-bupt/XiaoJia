@@ -1,6 +1,7 @@
 package com.hmammon.familyphoto;
 
 import android.app.Application;
+import android.content.Intent;
 import android.os.Environment;
 import android.telephony.TelephonyManager;
 
@@ -27,6 +28,9 @@ public class BaseApp extends Application {
 
         //初始化图片加载器
         ImageLoader.getInstance().init(ImageHelper.config);
+
+        Intent it = new Intent(this, FileService.class);
+        startService(it);
     }
 
     public static Application getInstance(){
