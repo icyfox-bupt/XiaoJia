@@ -1,6 +1,7 @@
 package com.hmammon.familyphoto;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -81,6 +82,12 @@ public class MyFileHandler extends FileAsyncHttpResponseHandler {
             //向服务器发送删除请求
             UpdatePhoto up = new UpdatePhoto(fileName);
             up.start();
+
+            //发送更新数据请求
+            Intent msg = new Intent();
+            msg.setAction(FileService.REFRESH);
+            BaseApp.getInstance().sendBroadcast(msg);
+
         } catch (IOException e) {
             Log.e("http","解压失败 " + file.getAbsolutePath());
         }

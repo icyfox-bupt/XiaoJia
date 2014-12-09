@@ -6,7 +6,7 @@
 
     <TextView
         android:id="@+id/tv"
-        android:text="@string/hello_world"
+        android:text="@string/nopic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

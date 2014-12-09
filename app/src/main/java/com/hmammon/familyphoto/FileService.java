@@ -17,6 +17,7 @@ public class FileService extends Service {
     private TimeTickReceiver receiver;
     private SharedPreferences sp;
     private final String LASTTIME = "lasttime";
+    public static final String REFRESH = "action_refresh";
 
     @Override
     public void onCreate() {
