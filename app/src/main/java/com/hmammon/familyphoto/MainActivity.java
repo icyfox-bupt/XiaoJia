@@ -36,6 +36,7 @@ public class MainActivity extends Activity {
     private ImageLoader loader;
     private boolean isOpen;
     private boolean isRun;
+    private Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +144,8 @@ public class MainActivity extends Activity {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+            if (paths.size() <= 1) return;
+
             if (msg.what == 1) {
                 int index = new Random().nextInt(paths.size());
                 loader.displayImage("file://" + paths.get(index), iv);
@@ -150,7 +153,8 @@ public class MainActivity extends Activity {
         }
     };
 
-    Thread timer = new Thread(){
+    class Timer extends Thread{
+
         @Override
         public void run() {
             super.run();
@@ -168,6 +172,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
+        timer = new Timer();
         isRun = true;
         timer.start();
 
@@ -181,6 +186,7 @@ public class MainActivity extends Activity {
         super.onStop();
         isRun = false;
         unregisterReceiver(DbChange);
+        timer = null;
     }
 
     /**
