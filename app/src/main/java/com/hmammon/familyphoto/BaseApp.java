@@ -3,6 +3,7 @@ package com.hmammon.familyphoto;
 import android.app.Application;
 import android.content.Intent;
 import android.telephony.TelephonyManager;
+import android.widget.Toast;
 
 import com.hmammon.familyphoto.http.HttpHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -31,6 +32,8 @@ public class BaseApp extends Application {
 
         Intent it = new Intent(this, FileService.class);
         startService(it);
+
+        Toast.makeText(this,"设备号:" + getDeviceId(), Toast.LENGTH_LONG).show();
     }
 
     public static Application getInstance(){
@@ -40,8 +43,8 @@ public class BaseApp extends Application {
     public static String getDeviceId(){
         TelephonyManager tm = (TelephonyManager) getInstance().
                 getSystemService(TELEPHONY_SERVICE);
-        return "359209020434936";
-//        return tm.getDeviceId();
+//        return "359209020434936";
+        return tm.getDeviceId();
     }
 
 }

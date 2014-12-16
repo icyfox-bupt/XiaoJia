@@ -20,6 +20,8 @@ import android.os.Handler;
 import com.hmammon.familyphoto.db.PhotoContract;
 import com.hmammon.familyphoto.db.PhotoDbHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.update.UmengUpdateAgent;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -59,6 +61,9 @@ public class MainActivity extends Activity {
 
         if (paths.size() > 0)
             loader.displayImage("file://" + paths.get(0), iv);
+
+        //友盟更新
+        UmengUpdateAgent.update(this);
     }
 
     private AdapterView.OnItemClickListener itListener = new AdapterView.OnItemClickListener() {
@@ -160,7 +165,7 @@ public class MainActivity extends Activity {
             super.run();
             while (isRun){
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -203,4 +208,16 @@ public class MainActivity extends Activity {
         }
 
     };
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
 }
