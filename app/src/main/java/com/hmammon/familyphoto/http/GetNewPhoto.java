@@ -2,7 +2,7 @@ package com.hmammon.familyphoto.http;
 
 import android.util.Log;
 
-import com.hmammon.familyphoto.BaseApp;
+import com.hmammon.familyphoto.utils.BaseApp;
 import com.hmammon.familyphoto.MyFileHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;

@@ -1,9 +1,10 @@
-package com.hmammon.familyphoto;
+package com.hmammon.familyphoto.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
 
+import com.hmammon.familyphoto.R;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;

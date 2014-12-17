@@ -1,11 +1,13 @@
-package com.hmammon.familyphoto;
+package com.hmammon.familyphoto.utils;
 
 import android.app.Application;
 import android.content.Intent;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
+import com.hmammon.familyphoto.FileService;
 import com.hmammon.familyphoto.http.HttpHelper;
+import com.hmammon.familyphoto.utils.ImageHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;

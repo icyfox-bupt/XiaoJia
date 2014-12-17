@@ -1,6 +1,6 @@
 package com.hmammon.familyphoto.http;
 
-import com.hmammon.familyphoto.BaseApp;
+import com.hmammon.familyphoto.utils.BaseApp;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 

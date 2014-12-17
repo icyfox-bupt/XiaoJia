@@ -24,7 +24,7 @@
  * It has been substantially rewritten and added to from the original version.
  */
 // @formatter:on
-package com.hmammon.familyphoto;
+package com.hmammon.familyphoto.utils;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -50,6 +50,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Scroller;
+
+import com.hmammon.familyphoto.R;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

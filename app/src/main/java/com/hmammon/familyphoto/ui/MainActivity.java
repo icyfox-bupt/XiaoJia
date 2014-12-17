@@ -1,4 +1,4 @@
-package com.hmammon.familyphoto;
+package com.hmammon.familyphoto.ui;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.DisplayMetrics;
@@ -17,6 +18,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.os.Handler;
 
+import com.hmammon.familyphoto.FileService;
+import com.hmammon.familyphoto.R;
+import com.hmammon.familyphoto.utils.BaseActivity;
+import com.hmammon.familyphoto.utils.HorizontalListView;
+import com.hmammon.familyphoto.PhotoAdapter;
 import com.hmammon.familyphoto.db.PhotoContract;
 import com.hmammon.familyphoto.db.PhotoDbHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -27,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
 
     private TextView tv;
     private SQLiteDatabase db;
@@ -39,6 +45,7 @@ public class MainActivity extends Activity {
     private boolean isOpen;
     private boolean isRun;
     private Timer timer;
+    private WifiManager wifiManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +71,11 @@ public class MainActivity extends Activity {
 
         //友盟更新
         UmengUpdateAgent.update(this);
+
+        wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+        if (wifiManager.getWifiState() == wifiManager.WIFI_STATE_DISABLED){
+            quickStart(WifiActivity.class);
+        }
     }
 
     private AdapterView.OnItemClickListener itListener = new AdapterView.OnItemClickListener() {

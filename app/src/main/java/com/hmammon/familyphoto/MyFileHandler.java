@@ -9,6 +9,7 @@ import com.hmammon.familyphoto.db.PhotoContract;
 import com.hmammon.familyphoto.db.PhotoDbHelper;
 import com.hmammon.familyphoto.http.HttpHelper;
 import com.hmammon.familyphoto.http.UpdatePhoto;
+import com.hmammon.familyphoto.utils.BaseApp;
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
 
 import org.apache.http.Header;
