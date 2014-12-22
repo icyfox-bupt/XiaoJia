@@ -121,7 +121,7 @@ public class WifiActivity extends BaseActivity {
             tvLevel = (TextView) view.findViewById(R.id.tv_mac);
 
             tvName.setText(wifiScanList.get(i).SSID);
-            tvLevel.setText(wifiScanList.get(i).level);
+            tvLevel.setText(wifiScanList.get(i).level+"");
 
             return view;
         }

@@ -1,6 +1,5 @@
 package com.hmammon.familyphoto.ui;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,22 +8,23 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.os.Handler;
 
 import com.hmammon.familyphoto.FileService;
-import com.hmammon.familyphoto.R;
-import com.hmammon.familyphoto.utils.BaseActivity;
-import com.hmammon.familyphoto.utils.HorizontalListView;
 import com.hmammon.familyphoto.PhotoAdapter;
+import com.hmammon.familyphoto.R;
 import com.hmammon.familyphoto.db.PhotoContract;
 import com.hmammon.familyphoto.db.PhotoDbHelper;
+import com.hmammon.familyphoto.utils.BaseActivity;
+import com.hmammon.familyphoto.utils.HorizontalListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
@@ -35,7 +35,6 @@ import java.util.Random;
 
 public class MainActivity extends BaseActivity {
 
-    private TextView tv;
     private SQLiteDatabase db;
     private HorizontalListView list;
     private PhotoAdapter adapter;
@@ -45,17 +44,17 @@ public class MainActivity extends BaseActivity {
     private boolean isOpen;
     private boolean isRun;
     private Timer timer;
-    private WifiManager wifiManager;
+    private Button btnWifi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tv = (TextView)findViewById(R.id.tv);
         list = (HorizontalListView) findViewById(R.id.listView);
         iv = (ImageView)findViewById(R.id.imageView);
         loader = ImageLoader.getInstance();
+        btnWifi = (Button)findViewById(R.id.btn_wifi);
 
         refreshDb();
 
@@ -64,18 +63,16 @@ public class MainActivity extends BaseActivity {
         list.setOnItemClickListener(itListener);
 
         iv.setOnClickListener(clickListener);
+        btnWifi.setOnClickListener(clickListener);
+
         toggle();
 
         if (paths.size() > 0)
             loader.displayImage("file://" + paths.get(0), iv);
 
         //友盟更新
+        UmengUpdateAgent.setUpdateCheckConfig(false);
         UmengUpdateAgent.update(this);
-
-        wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-        if (wifiManager.getWifiState() == wifiManager.WIFI_STATE_DISABLED){
-            quickStart(WifiActivity.class);
-        }
     }
 
     private AdapterView.OnItemClickListener itListener = new AdapterView.OnItemClickListener() {
@@ -89,7 +86,12 @@ public class MainActivity extends BaseActivity {
     private View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-           toggle();
+           if (view.getId() == R.id.imageView){
+               toggle();
+           }
+           else if (view.getId() == R.id.btn_wifi){
+               quickStart(WifiActivity.class);
+           }
         }
     };
 
@@ -232,4 +234,5 @@ public class MainActivity extends BaseActivity {
         super.onResume();
         MobclickAgent.onResume(this);
     }
+
 }

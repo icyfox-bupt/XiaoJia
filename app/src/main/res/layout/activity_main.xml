@@ -29,4 +29,13 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="设置WiFi"
+        android:id="@+id/btn_wifi"
+        android:background="#fff"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
 </RelativeLayout>
