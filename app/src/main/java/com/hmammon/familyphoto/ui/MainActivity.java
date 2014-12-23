@@ -13,6 +13,7 @@ import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -207,4 +208,19 @@ public class MainActivity extends BaseActivity {
         MobclickAgent.onResume(this);
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Log.i("key", keyCode + " " +event);
+        switch (keyCode){
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+            case KeyEvent.KEYCODE_DPAD_UP:
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+            case KeyEvent.KEYCODE_BACK: {
+                return true;
+            }
+            default:
+                return super.onKeyDown(keyCode, event);
+        }
+    }
 }
