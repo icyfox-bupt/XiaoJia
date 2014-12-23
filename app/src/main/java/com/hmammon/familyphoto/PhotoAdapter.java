@@ -1,8 +1,6 @@
 package com.hmammon.familyphoto;
 
 import android.app.Activity;
-import android.database.Cursor;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -17,19 +15,19 @@ import java.util.List;
  */
 public class PhotoAdapter extends BaseAdapter {
 
-    List<String> paths;
+    List<Photo> photos;
     Activity activity;
     ImageLoader loader;
 
-    public PhotoAdapter(List<String> path, Activity activity) {
-        this.paths = path;
+    public PhotoAdapter(List<Photo> path, Activity activity) {
+        this.photos = path;
         this.activity = activity;
         loader = ImageLoader.getInstance();
     }
 
     @Override
     public int getCount() {
-        return paths.size();
+        return photos.size();
     }
 
     @Override
@@ -55,7 +53,7 @@ public class PhotoAdapter extends BaseAdapter {
             vh = (ViewHolder) view.getTag();
         }
 
-        String path = "file://" + paths.get(i);
+        String path = "file://" + photos.get(i).path;
 
         loader.displayImage(path, vh.iv);
 

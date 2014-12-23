@@ -6,25 +6,29 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.wifi.WifiManager;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.hmammon.familyphoto.FileService;
+import com.hmammon.familyphoto.Photo;
 import com.hmammon.familyphoto.PhotoAdapter;
 import com.hmammon.familyphoto.R;
 import com.hmammon.familyphoto.db.PhotoContract;
 import com.hmammon.familyphoto.db.PhotoDbHelper;
 import com.hmammon.familyphoto.utils.BaseActivity;
 import com.hmammon.familyphoto.utils.HorizontalListView;
+import com.hmammon.familyphoto.utils.ImageManager;
+import com.hmammon.familyphoto.utils.Tools;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
@@ -39,12 +43,11 @@ public class MainActivity extends BaseActivity {
     private HorizontalListView list;
     private PhotoAdapter adapter;
     private ImageView iv;
-    private ArrayList<String> paths;
+    private ArrayList<Photo> photos;
     private ImageLoader loader;
     private boolean isOpen;
-    private boolean isRun;
-    private Timer timer;
     private Button btnWifi;
+    private ImageManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,17 +61,18 @@ public class MainActivity extends BaseActivity {
 
         refreshDb();
 
-        adapter = new PhotoAdapter(paths, this);
+        adapter = new PhotoAdapter(photos, this);
         list.setAdapter(adapter);
         list.setOnItemClickListener(itListener);
 
         iv.setOnClickListener(clickListener);
         btnWifi.setOnClickListener(clickListener);
 
+        manager = new ImageManager(iv, this, photos);
         toggle();
 
-        if (paths.size() > 0)
-            loader.displayImage("file://" + paths.get(0), iv);
+        if (photos.size() > 0)
+            loader.displayImage("file://" + photos.get(0).path, iv);
 
         //友盟更新
         UmengUpdateAgent.setUpdateCheckConfig(false);
@@ -79,7 +83,7 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            loader.displayImage("file://" + paths.get(position) , iv);
+            manager.show(position);
         }
     };
 
@@ -118,18 +122,20 @@ public class MainActivity extends BaseActivity {
                 sortOrder
         );
 
-        if (paths == null)
-            paths = new ArrayList<String>();
+        if (photos == null)
+            photos = new ArrayList<Photo>();
         else{
-            paths.clear();
+            photos.clear();
         }
 
         while (c.moveToNext()){
-            paths.add(c.getString(0));
+            Photo p = new Photo();
+            p.path = c.getString(0);
+            photos.add(p);
         }
 
-        for (int i = 0 ;i <paths.size();i++){
-            Log.i("path",paths.get(i));
+        for (int i = 0 ;i <photos.size();i++){
+            Log.i("path", photos.get(i).path);
         }
 
         c.close();
@@ -140,60 +146,27 @@ public class MainActivity extends BaseActivity {
      * 打开 or 关闭底部快速选择框
      */
     private void toggle(){
-        DisplayMetrics out = new DisplayMetrics();
-        getWindow().getWindowManager().getDefaultDisplay().getMetrics(out);
-        int wHeight = out.heightPixels;
+        Point size = Tools.getScreenSize(this);
+        int wHeight = size.y;
         int lHeight= list.getMeasuredHeight();
 
         if (isOpen){
             float y = wHeight;
             list.animate().y(y);
             isOpen = false;
+            manager.pause();
         }else{
             float y = wHeight - lHeight;
             list.animate().y(y);
             isOpen = true;
+            manager.start();
         }
     }
-
-    /**
-     * handler, timer, onStart, onStop负责切换图片定时的功能
-     */
-    private Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (paths.size() <= 1) return;
-
-            if (msg.what == 1) {
-                int index = new Random().nextInt(paths.size());
-                loader.displayImage("file://" + paths.get(index), iv);
-            }
-        }
-    };
-
-    class Timer extends Thread{
-
-        @Override
-        public void run() {
-            super.run();
-            while (isRun){
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                handler.sendEmptyMessage(1);
-            }
-        }
-    };
 
     @Override
     protected void onStart() {
         super.onStart();
-        timer = new Timer();
-        isRun = true;
-        timer.start();
+        manager.start();
 
         IntentFilter ift = new IntentFilter();
         ift.addAction(FileService.REFRESH);
@@ -203,9 +176,8 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        isRun = false;
         unregisterReceiver(DbChange);
-        timer = null;
+        manager.pause();
     }
 
     /**
