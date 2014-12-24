@@ -23,6 +23,7 @@ public class ImageManager {
     private int duration = 10000;
     List<Photo> photos;
     private Timer timer;
+    private int current = 0;
 
     public ImageManager(ImageView imageView, Activity activity, List<Photo> photos) {
         this.imageView = imageView;
@@ -32,7 +33,8 @@ public class ImageManager {
     }
 
     public void next(){
-        int index = new Random().nextInt(photos.size());
+        int index = current + 1;
+        if (index > photos.size() - 1) index = 0;
         display(index);
     }
 
