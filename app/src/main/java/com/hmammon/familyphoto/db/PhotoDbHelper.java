@@ -13,23 +13,23 @@ public class PhotoDbHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "Photo.db";
 
-    //SQL语句
-    private static final String TEXT_TYPE = " TEXT";
-    private static final String LONG_TYPE = " LONG";
-    private static final String COMMA_SEP = ",";
-    private static final String SQL_CREATE_ENTRIES =
-            "CREATE TABLE IF NOT EXISTS " + PhotoContract.TABLE_NAME + " (" +
-                    PhotoContract.COLUMN_NAME_PHOTO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                    PhotoContract.COLUMN_NAME_PHOTO_PATH + TEXT_TYPE + COMMA_SEP +
-                    PhotoContract.COLUMN_NAME_PHOTO_TIME + LONG_TYPE +
-            ")";
+        //SQL语句
+        private static final String TEXT_TYPE = " TEXT";
+        private static final String LONG_TYPE = " LONG";
+        private static final String COMMA_SEP = ",";
+        private static final String SQL_CREATE_ENTRIES =
+                "CREATE TABLE IF NOT EXISTS " + PhotoContract.TABLE_NAME + " (" +
+                        PhotoContract.COLUMN_NAME_PHOTO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                        PhotoContract.COLUMN_NAME_PHOTO_PATH + TEXT_TYPE + COMMA_SEP +
+                        PhotoContract.COLUMN_NAME_PHOTO_TIME + LONG_TYPE +
+                        ")";
 
-    private static final String SQL_ADD_THUMBS =
-            "ALTER TABLE " + PhotoContract.TABLE_NAME + " ADD thumb TEXT DEFAULT ''";
+        private static final String SQL_ADD_THUMBS =
+                "ALTER TABLE " + PhotoContract.TABLE_NAME + " ADD thumb TEXT DEFAULT ''";
 
-    public PhotoDbHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-    }
+        public PhotoDbHelper(Context context) {
+            super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        }
     public void onCreate(SQLiteDatabase db) {
         Log.i("db","create");
         db.execSQL(SQL_CREATE_ENTRIES);
