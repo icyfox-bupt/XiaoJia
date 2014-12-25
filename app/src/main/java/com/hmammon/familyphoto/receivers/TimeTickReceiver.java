@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.hmammon.familyphoto.FileService;
+import com.umeng.update.UmengUpdateAgent;
 
 /**
  * Created by icyfox on 2014/12/8.
@@ -22,7 +23,14 @@ public class TimeTickReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        long time = System.currentTimeMillis();
         Log.i("rec", intent.getAction());
         service.startDownload();
+
+        //一小时更新一次
+        if (time / 1000 % 3600 == 0){
+            UmengUpdateAgent.setUpdateCheckConfig(false);
+            UmengUpdateAgent.update(context);
+        }
     }
 }

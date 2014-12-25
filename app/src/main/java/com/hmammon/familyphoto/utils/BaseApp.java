@@ -2,6 +2,7 @@ package com.hmammon.familyphoto.utils;
 
 import android.app.Application;
 import android.content.Intent;
+import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
@@ -34,8 +35,6 @@ public class BaseApp extends Application {
 
         Intent it = new Intent(this, FileService.class);
         startService(it);
-
-        Toast.makeText(this,"设备号:" + getDeviceId(), Toast.LENGTH_LONG).show();
     }
 
     public static Application getInstance(){
@@ -43,10 +42,9 @@ public class BaseApp extends Application {
     }
 
     public static String getDeviceId(){
-        TelephonyManager tm = (TelephonyManager) getInstance().
-                getSystemService(TELEPHONY_SERVICE);
+        String id = Build.SERIAL;
 //        return "359209020434936";
-        return tm.getDeviceId();
+        return id;
     }
 
 }

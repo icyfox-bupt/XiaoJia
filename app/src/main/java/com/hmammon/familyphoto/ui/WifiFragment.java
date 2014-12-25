@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
@@ -28,6 +29,7 @@ import android.widget.Toast;
 
 import com.hmammon.familyphoto.R;
 import com.hmammon.familyphoto.utils.WifiComparator;
+import com.hmammon.familyphoto.utils.WifiHelper;
 
 import java.util.Collections;
 import java.util.List;
@@ -64,7 +66,8 @@ public class WifiFragment extends Fragment implements View.OnClickListener
         wifiReceiver = new WifiReceiver();
 
         wifiMana = (WifiManager) activity.getSystemService(Context.WIFI_SERVICE);
-        wifiMana.setWifiEnabled(true);
+        if (!wifiMana.isWifiEnabled())
+            wifiMana.setWifiEnabled(true);
 
         dialog = new ProgressDialog(activity);
     }
@@ -97,6 +100,7 @@ public class WifiFragment extends Fragment implements View.OnClickListener
         intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         activity.registerReceiver(wifiReceiver, intentFilter);
         wifiMana.startScan();
     }
@@ -125,6 +129,7 @@ public class WifiFragment extends Fragment implements View.OnClickListener
                 return;
             }
             connect(choose, pass);
+            dialog.show();
         }
     }
 
@@ -136,6 +141,7 @@ public class WifiFragment extends Fragment implements View.OnClickListener
         if (getSecurity(choose) == SECURITY_NONE){
             dialog.setMessage("连接中...");
             dialog.show();
+            connect(choose, "");
         }
     }
 
@@ -208,13 +214,20 @@ public class WifiFragment extends Fragment implements View.OnClickListener
             //网络状态改变消息
             else if (intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)){
                 NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-                if (info != null &&info.isConnected()){
-                    showToast("连接成功");
+                if (info != null){
+                    dialog.setMessage(WifiHelper.getInfo(info.getDetailedState()));
+                    Log.i("wifi", info.getDetailedState()+"");
+                    if (info.isConnected()) {
+                        showToast(info.getDetailedState());
+                        dialog.dismiss();
+                    }
                 }
             }
+
             //Wifi状态改变消息
             else if (intent.getAction().equals(WifiManager.WIFI_STATE_CHANGED_ACTION)){
                 int wifistate = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE,WifiManager.WIFI_STATE_DISABLED);
+                Log.i("wifi", wifistate+"");
                 if(wifistate == WifiManager.WIFI_STATE_ENABLED) showToast("Wifi已开启");
             }
         }
