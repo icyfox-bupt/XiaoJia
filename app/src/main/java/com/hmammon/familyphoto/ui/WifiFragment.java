@@ -2,6 +2,7 @@ package com.hmammon.familyphoto.ui;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,8 +21,10 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hmammon.familyphoto.R;
 import com.hmammon.familyphoto.utils.WifiComparator;
@@ -36,7 +39,7 @@ public class WifiFragment extends Fragment implements View.OnClickListener
                                             , AdapterView.OnItemClickListener{
 
     private View view;
-    private Button btnConn, btnExit;
+    private Button btnConnect, btnExit, btnConn;
     private View llDetail;
     private List<ScanResult> wifiScanList;
     private Activity activity;
@@ -47,6 +50,8 @@ public class WifiFragment extends Fragment implements View.OnClickListener
     private ListView lv;
     private TextView tvWifi;
     private EditText etPass;
+    private ScanResult choose;
+    private ProgressDialog dialog;
 
     public WifiFragment() {
     }
@@ -61,6 +66,7 @@ public class WifiFragment extends Fragment implements View.OnClickListener
         wifiMana = (WifiManager) activity.getSystemService(Context.WIFI_SERVICE);
         wifiMana.setWifiEnabled(true);
 
+        dialog = new ProgressDialog(activity);
     }
 
     @Override
@@ -68,10 +74,13 @@ public class WifiFragment extends Fragment implements View.OnClickListener
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_wifi, container, false);
         view.setOnClickListener(this);
-        btnConn = (Button)view.findViewById(R.id.btn_connect);
+        btnConnect = (Button)view.findViewById(R.id.btn_connect);
+        btnConnect.setOnClickListener(this);
+        btnConn = (Button)view.findViewById(R.id.btn_conn);
         btnConn.setOnClickListener(this);
         btnExit = (Button)view.findViewById(R.id.btn_exit);
         btnExit.setOnClickListener(this);
+        etPass = (EditText)view.findViewById(R.id.et);
 
         llDetail = view.findViewById(R.id.ll_detail);
         lv = (ListView) view.findViewById(R.id.lv);
@@ -87,6 +96,7 @@ public class WifiFragment extends Fragment implements View.OnClickListener
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         activity.registerReceiver(wifiReceiver, intentFilter);
         wifiMana.startScan();
     }
@@ -99,21 +109,34 @@ public class WifiFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onClick(View view) {
-        if (view == btnConn){
+        if (view == btnConnect){
             llDetail.setVisibility(View.VISIBLE);
-            btnConn.setVisibility(View.GONE);
+            btnConnect.setVisibility(View.GONE);
         }
 
         else if (view == btnExit){
             getActivity().getFragmentManager().beginTransaction().remove(this).commit();
         }
+
+        else if (view == btnConn){
+            String pass = etPass.getText().toString();
+            if (pass.length() == 0) {
+                showToast("请输入密码");
+                return;
+            }
+            connect(choose, pass);
+        }
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        ScanResult sr = wifiScanList.get(i);
+        choose = wifiScanList.get(i);
+        tvWifi.setText("连接到:" + choose.SSID);
 
-        tvWifi.setText("连接到:" + sr.SSID);
+        if (getSecurity(choose) == SECURITY_NONE){
+            dialog.setMessage("连接中...");
+            dialog.show();
+        }
     }
 
     private void list(){
@@ -157,8 +180,17 @@ public class WifiFragment extends Fragment implements View.OnClickListener
                 view = activity.getLayoutInflater().inflate(R.layout.item_wifi, null);
 
             TextView tvName;
+            ImageView ivPass;
+
             tvName = (TextView) view.findViewById(R.id.tv_name);
             tvName.setText(wifiScanList.get(i).SSID);
+            ivPass = (ImageView) view.findViewById(R.id.iv_pass);
+
+            boolean lock = getSecurity(wifiScanList.get(i)) == SECURITY_NONE;
+
+            if (!lock) ivPass.setVisibility(View.VISIBLE);
+            else ivPass.setVisibility(View.INVISIBLE);
+
             return view;
         }
     }
@@ -167,11 +199,23 @@ public class WifiFragment extends Fragment implements View.OnClickListener
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.w("wifi", intent  + ".");
+
+            //Wifi列表可用消息
             if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)){
                 list();
             }
-            else {
+            //网络状态改变消息
+            else if (intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)){
                 NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+                if (info != null &&info.isConnected()){
+                    showToast("连接成功");
+                }
+            }
+            //Wifi状态改变消息
+            else if (intent.getAction().equals(WifiManager.WIFI_STATE_CHANGED_ACTION)){
+                int wifistate = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE,WifiManager.WIFI_STATE_DISABLED);
+                if(wifistate == WifiManager.WIFI_STATE_ENABLED) showToast("Wifi已开启");
             }
         }
     }
@@ -230,5 +274,10 @@ public class WifiFragment extends Fragment implements View.OnClickListener
                 break;
             }
         }
+    }
+
+    private void showToast(Object msg){
+        Toast.makeText(activity, msg+"" , Toast.LENGTH_SHORT)
+                .show();
     }
 }

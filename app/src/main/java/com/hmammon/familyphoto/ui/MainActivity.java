@@ -9,6 +9,8 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -103,7 +105,6 @@ public class MainActivity extends BaseActivity {
                toggle();
            }
            else if (view.getId() == R.id.btn_wifi){
-//               quickStart(WifiActivity.class);
                FragmentTransaction ft = fragMana.beginTransaction();
                ft.add(R.id.container, new WifiFragment());
                ft.commit();
@@ -135,7 +136,7 @@ public class MainActivity extends BaseActivity {
         );
 
         if (photos == null)
-            photos = new ArrayList<Photo>();
+            photos = new ArrayList<>();
         else{
             photos.clear();
         }
@@ -211,31 +212,32 @@ public class MainActivity extends BaseActivity {
 
     };
 
-        @Override
-        protected void onPause() {
-            super.onPause();
-            MobclickAgent.onPause(this);
-        }
-
-        @Override
-        protected void onResume() {
-            super.onResume();
-            MobclickAgent.onResume(this);
-        }
-
-        @Override
-        public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.i("key", keyCode + " " +event);
-        switch (keyCode){
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-            case KeyEvent.KEYCODE_DPAD_UP:
-            case KeyEvent.KEYCODE_DPAD_LEFT:
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-            case KeyEvent.KEYCODE_BACK: {
-                return true;
-            }
-            default:
-                return super.onKeyDown(keyCode, event);
-        }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    Log.i("key", keyCode + " " +event);
+    switch (keyCode){
+        case KeyEvent.KEYCODE_DPAD_DOWN:
+        case KeyEvent.KEYCODE_DPAD_UP:
+        case KeyEvent.KEYCODE_DPAD_LEFT:
+        case KeyEvent.KEYCODE_DPAD_RIGHT:
+        case KeyEvent.KEYCODE_BACK: {
+            return true;
+        }
+        default:
+            return super.onKeyDown(keyCode, event);
+    }
+    }
+
 }

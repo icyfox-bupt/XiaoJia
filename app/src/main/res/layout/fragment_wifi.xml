@@ -58,6 +58,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/passtip"
                 android:textColorHint="@color/white"
+                android:textColor="@color/white"
                 android:id="@+id/et" />
 
             <Button
@@ -66,7 +67,7 @@
                 android:text="@string/connect"
                 android:background="@drawable/selector_btn"
                 android:textColor="@color/white"
-                android:id="@+id/button" />
+                android:id="@+id/btn_conn" />
         </LinearLayout>
 
         <ListView
