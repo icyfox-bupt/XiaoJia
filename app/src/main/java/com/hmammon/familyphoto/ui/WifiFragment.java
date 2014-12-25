@@ -1,5 +1,7 @@
 package com.hmammon.familyphoto.ui;
 
+
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +11,9 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -19,80 +24,115 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hmammon.familyphoto.R;
-import com.hmammon.familyphoto.utils.BaseActivity;
+import com.hmammon.familyphoto.utils.WifiComparator;
 
+import java.util.Collections;
 import java.util.List;
 
-public class WifiActivity extends BaseActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class WifiFragment extends Fragment implements View.OnClickListener
+                                            , AdapterView.OnItemClickListener{
 
-    private WifiManager wifiMana;
-    private WifiReceiver wifiReceiver;
-    private ListView lv;
-    private WifiAdapter adapter;
+    private View view;
+    private Button btnConn, btnExit;
+    private View llDetail;
     private List<ScanResult> wifiScanList;
-    private TextView tvName;
+    private Activity activity;
+    private WifiReceiver wifiReceiver;
     private final int SECURITY_NONE = 0, SECURITY_WEP = 1, SECURITY_PSK = 2, SECURITY_EAP = 3;
-    private ScanResult sr;
-    private Button btn;
-    private EditText et;
+    private WifiManager wifiMana;
+    private WifiAdapter adapter;
+    private ListView lv;
+    private TextView tvWifi;
+    private EditText etPass;
+
+    public WifiFragment() {
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wifi);
-
-        wifiMana = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        wifiMana.setWifiEnabled(true);
+        activity = getActivity();
 
         wifiReceiver = new WifiReceiver();
+
+        wifiMana = (WifiManager) activity.getSystemService(Context.WIFI_SERVICE);
+        wifiMana.setWifiEnabled(true);
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_wifi, container, false);
+        view.setOnClickListener(this);
+        btnConn = (Button)view.findViewById(R.id.btn_connect);
+        btnConn.setOnClickListener(this);
+        btnExit = (Button)view.findViewById(R.id.btn_exit);
+        btnExit.setOnClickListener(this);
+
+        llDetail = view.findViewById(R.id.ll_detail);
+        lv = (ListView) view.findViewById(R.id.lv);
+        lv.setOnItemClickListener(this);
+        tvWifi = (TextView) view.findViewById(R.id.tv_wifi);
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-        registerReceiver(wifiReceiver, intentFilter);
-
-        lv = (ListView)findViewById(R.id.lv);
-        lv.setOnItemClickListener(itemClick);
-        tvName = (TextView) findViewById(R.id.tv_name);
-        btn = (Button)findViewById(R.id.btn);
-        et = (EditText)findViewById(R.id.editText);
-        btn.setOnClickListener(click);
-
+        activity.registerReceiver(wifiReceiver, intentFilter);
         wifiMana.startScan();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(wifiReceiver);
+    public void onPause() {
+        super.onPause();
+        activity.unregisterReceiver(wifiReceiver);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view == btnConn){
+            llDetail.setVisibility(View.VISIBLE);
+            btnConn.setVisibility(View.GONE);
+        }
+
+        else if (view == btnExit){
+            getActivity().getFragmentManager().beginTransaction().remove(this).commit();
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        ScanResult sr = wifiScanList.get(i);
+
+        tvWifi.setText("连接到:" + sr.SSID);
     }
 
     private void list(){
         wifiScanList = wifiMana.getScanResults();
-        adapter = new WifiAdapter();
-        lv.setAdapter(adapter);
-    }
 
-    class WifiReceiver extends BroadcastReceiver{
+        Collections.sort(wifiScanList, new WifiComparator());
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)){
-                list();
-                showToast("wifi出结果");
-            }
-            else {
-                NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-                showToast("aaaaaaaaa" + info);
-                if (info != null && info.isConnected()){
-                    showToast("wifi连接成功");
-                    finish();
-                }
-            }
+        if (adapter == null) {
+            adapter = new WifiAdapter();
+            lv.setAdapter(adapter);
+        }else{
+            adapter.notifyDataSetChanged();
         }
     }
 
-    class WifiAdapter extends BaseAdapter{
+    /**
+     * Wifi列表的适配器
+     */
+    class WifiAdapter extends BaseAdapter {
 
         @Override
         public int getCount() {
@@ -114,33 +154,33 @@ public class WifiActivity extends BaseActivity {
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             if (view == null)
-                view = getLayoutInflater().inflate(R.layout.item_wifi, null);
+                view = activity.getLayoutInflater().inflate(R.layout.item_wifi, null);
 
             TextView tvName;
             tvName = (TextView) view.findViewById(R.id.tv_name);
             tvName.setText(wifiScanList.get(i).SSID);
-
             return view;
         }
     }
 
-    private AdapterView.OnItemClickListener itemClick = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            tvName.setText("连接Wifi：" + wifiScanList.get(i).SSID );
-            sr = wifiScanList.get(i);
-        }
-    };
+    class WifiReceiver extends BroadcastReceiver {
 
-    private View.OnClickListener click = new View.OnClickListener() {
         @Override
-        public void onClick(View view) {
-            if (sr == null) return;
-            String pass = et.getText().toString();
-            connect(sr, pass);
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)){
+                list();
+            }
+            else {
+                NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+            }
         }
-    };
+    }
 
+    /**
+     * 获得网络的安全类型
+     * @param result
+     * @return
+     */
     int getSecurity(ScanResult result) {
         if (result.capabilities.contains("WEP")) {
             return SECURITY_WEP;
@@ -152,6 +192,11 @@ public class WifiActivity extends BaseActivity {
         return SECURITY_NONE;
     }
 
+    /**
+     * 连接到相应的网络上
+     * @param result
+     * @param pass
+     */
     private void connect(ScanResult result, String pass){
         WifiConfiguration conf = new WifiConfiguration();
         conf.SSID = "\"" + result.SSID + "\"";
@@ -186,5 +231,4 @@ public class WifiActivity extends BaseActivity {
             }
         }
     }
-
 }

@@ -1,0 +1,95 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#A000"
+    tools:context="com.hmammon.familyphoto.ui.WifiFragment">
+
+    <Button
+        android:id="@+id/btn_connect"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:background="@drawable/selector_wifi_cir"
+        />
+
+    <LinearLayout
+        android:id="@+id/ll_detail"
+        android:layout_width="400dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/btn_connect"
+            android:textSize="25sp"
+            android:textColor="@color/orange"
+            android:id="@+id/textView" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@color/orange"
+            android:layout_margin="5dp"
+            android:layout_gravity="center_horizontal"></FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="请选择一个网络连接"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:id="@+id/tv_wifi" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="@string/passtip"
+                android:textColorHint="@color/white"
+                android:id="@+id/et" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/connect"
+                android:background="@drawable/selector_btn"
+                android:textColor="@color/white"
+                android:id="@+id/button" />
+        </LinearLayout>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/lv"
+            android:divider="@color/white"
+            android:dividerHeight="1dp"
+            android:padding="5dp"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/exit"
+        android:id="@+id/btn_exit"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/selector_btn"
+        android:textColor="@color/white"
+        android:layout_gravity="left|bottom" />
+
+
+</FrameLayout>

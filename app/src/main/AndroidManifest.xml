@@ -29,12 +29,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".ui.WifiActivity"
-            android:label="@string/title_activity_wifi"
-            android:screenOrientation="landscape">
-        </activity>
-
         <service
             android:name=".FileService"
             android:enabled="true"

@@ -1,5 +1,7 @@
 package com.hmammon.familyphoto.ui;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.hmammon.familyphoto.FileService;
@@ -49,16 +52,21 @@ public class MainActivity extends BaseActivity {
     private boolean isOpen;
     private Button btnWifi;
     private ImageManager manager;
+    private FragmentManager fragMana;
+    private FrameLayout topbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        fragMana = getFragmentManager();
+
         list = (HorizontalListView) findViewById(R.id.listView);
         iv = (ImageView)findViewById(R.id.imageView);
         loader = ImageLoader.getInstance();
         btnWifi = (Button)findViewById(R.id.btn_wifi);
+        topbar = (FrameLayout) findViewById(R.id.topbar);
 
         refreshDb();
 
@@ -95,7 +103,10 @@ public class MainActivity extends BaseActivity {
                toggle();
            }
            else if (view.getId() == R.id.btn_wifi){
-               quickStart(WifiActivity.class);
+//               quickStart(WifiActivity.class);
+               FragmentTransaction ft = fragMana.beginTransaction();
+               ft.add(R.id.container, new WifiFragment());
+               ft.commit();
            }
         }
     };
@@ -149,16 +160,20 @@ public class MainActivity extends BaseActivity {
     private void toggle(){
         Point size = Tools.getScreenSize(this);
         int wHeight = size.y;
+
         int lHeight= list.getMeasuredHeight();
+        int barHeight = topbar.getMeasuredHeight();
 
         if (isOpen){
             float y = wHeight;
             list.animate().y(y);
+            topbar.animate().y(0 - barHeight);
             isOpen = false;
             manager.pause();
         }else{
             float y = wHeight - lHeight;
             list.animate().y(y);
+            topbar.animate().y(0);
             isOpen = true;
             manager.start();
         }
@@ -196,20 +211,20 @@ public class MainActivity extends BaseActivity {
 
     };
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        MobclickAgent.onPause(this);
-    }
+        @Override
+        protected void onPause() {
+            super.onPause();
+            MobclickAgent.onPause(this);
+        }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        MobclickAgent.onResume(this);
-    }
+        @Override
+        protected void onResume() {
+            super.onResume();
+            MobclickAgent.onResume(this);
+        }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        @Override
+        public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.i("key", keyCode + " " +event);
         switch (keyCode){
             case KeyEvent.KEYCODE_DPAD_DOWN:
