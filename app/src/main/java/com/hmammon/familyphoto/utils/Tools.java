@@ -8,6 +8,7 @@ import android.view.Display;
 import android.view.WindowManager;
 
 /**
+ * xcfh9630 is key
  * Created by icyfox on 2014/12/23.
  */
 public class Tools {
