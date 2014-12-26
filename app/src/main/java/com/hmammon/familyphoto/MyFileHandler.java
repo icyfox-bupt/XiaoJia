@@ -31,14 +31,12 @@ public class MyFileHandler extends FileAsyncHttpResponseHandler {
 
     private final SQLiteDatabase db;
     private String fileName;
-    private int index;
     private GetNewPhoto gnp;
 
-    public MyFileHandler(File file, int index, GetNewPhoto gnp) {
+    public MyFileHandler(File file, GetNewPhoto gnp) {
         super(file);
         PhotoDbHelper dbhelper = new PhotoDbHelper(BaseApp.getInstance());
         db = dbhelper.getWritableDatabase();
-        this.index = index;
         this.gnp = gnp;
     }
 
@@ -60,12 +58,19 @@ public class MyFileHandler extends FileAsyncHttpResponseHandler {
         Intent msg = new Intent();
         msg.setAction(FileService.REFRESH);
         BaseApp.getInstance().sendBroadcast(msg);
+
+        saveInDb(file.getAbsolutePath());
     }
 
     private void saveInDb(String path){
         ContentValues cv = new ContentValues();
         cv.put(PhotoContract.COLUMN_NAME_PHOTO_PATH, path);
         cv.put(PhotoContract.COLUMN_NAME_PHOTO_TIME, System.currentTimeMillis()+"");
+        cv.put(PhotoContract.COLUMN_NAME_PHOTO_GUID, gnp.guid);
+        cv.put(PhotoContract.COLUMN_NAME_PHOTO_UID, gnp.uid);
+        cv.put(PhotoContract.COLUMN_NAME_PHOTO_NAME, "");
+        cv.put(PhotoContract.COLUMN_NAME_PHOTO_DESCRIPTION, "");
+        cv.put(PhotoContract.COLUMN_NAME_PHOTO_THUMB, "");
         db.insert(PhotoContract.TABLE_NAME,null, cv);
     }
 }

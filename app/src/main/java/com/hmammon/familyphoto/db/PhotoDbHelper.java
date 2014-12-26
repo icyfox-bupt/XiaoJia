@@ -10,7 +10,7 @@ import android.util.Log;
  */
 public class PhotoDbHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Photo.db";
 
         //SQL语句
@@ -21,6 +21,11 @@ public class PhotoDbHelper extends SQLiteOpenHelper {
                 "CREATE TABLE IF NOT EXISTS " + PhotoContract.TABLE_NAME + " (" +
                         PhotoContract.COLUMN_NAME_PHOTO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                         PhotoContract.COLUMN_NAME_PHOTO_PATH + TEXT_TYPE + COMMA_SEP +
+                        PhotoContract.COLUMN_NAME_PHOTO_GUID + TEXT_TYPE + COMMA_SEP +
+                        PhotoContract.COLUMN_NAME_PHOTO_UID + TEXT_TYPE + COMMA_SEP +
+                        PhotoContract.COLUMN_NAME_PHOTO_THUMB + TEXT_TYPE + COMMA_SEP +
+                        PhotoContract.COLUMN_NAME_PHOTO_NAME + TEXT_TYPE + COMMA_SEP +
+                        PhotoContract.COLUMN_NAME_PHOTO_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
                         PhotoContract.COLUMN_NAME_PHOTO_TIME + LONG_TYPE +
                         ")";
 

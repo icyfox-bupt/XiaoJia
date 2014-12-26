@@ -23,6 +23,7 @@ public class GetNewPhoto {
     private JSONArray downloads;
     private int msgLength = 0;
     private int downed = 0;
+    public String guid, uid;
 
     public void start() {
 
@@ -65,8 +66,8 @@ public class GetNewPhoto {
         if (downloads != null && imageIndex < downloads.length()) {
             JSONObject image = downloads.optJSONObject(imageIndex);
 
-            String guid = image.optString("guid");
-            String uid = image.optString("uid");
+            guid = image.optString("guid");
+            uid = image.optString("uid");
             JSONArray msgs = image.optJSONArray("msgs");
 
             if (msgs == null || msgs.length() == 0) return;
@@ -76,7 +77,7 @@ public class GetNewPhoto {
                 String filename = guid + "_" + i + ".jpg";
 
                 File file = new File(HttpHelper.SAVEPATH, filename);
-                MyFileHandler handler = new MyFileHandler(file, i, this);
+                MyFileHandler handler = new MyFileHandler(file, this);
 
                 HttpHelper.get(url, handler);
             }
