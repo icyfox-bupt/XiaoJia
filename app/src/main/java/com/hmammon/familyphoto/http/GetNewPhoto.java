@@ -2,8 +2,9 @@ package com.hmammon.familyphoto.http;
 
 import android.util.Log;
 
-import com.hmammon.familyphoto.utils.BaseApp;
 import com.hmammon.familyphoto.MyFileHandler;
+import com.hmammon.familyphoto.utils.BaseApp;
+import com.hmammon.familyphoto.utils.SPHelper;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -18,12 +19,17 @@ import java.io.File;
  */
 public class GetNewPhoto {
 
+    private int imageIndex = 0;
+    private JSONArray downloads;
+    private int msgLength = 0;
+    private int downed = 0;
+
     public void start() {
 
         RequestParams rp = new RequestParams();
         rp.add("deviceId", BaseApp.getDeviceId());
 
-        HttpHelper.post(HttpHelper.GETPHOTO, rp, handler);
+        HttpHelper.post(HttpHelper.SYNC, rp, handler);
     }
 
     private JsonHttpResponseHandler handler = new JsonHttpResponseHandler() {
@@ -31,28 +37,18 @@ public class GetNewPhoto {
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
             super.onSuccess(statusCode, headers, response);
-            Log.i("tag", response.toString());
+//            Log.i("tag", response.toString());
 
-            JSONArray datas = response.optJSONArray("data");
-            if (datas.length() == 0) return;
+            JSONObject json = response.optJSONObject("data");
+            if (json == null) return;
 
-            for (int i = 0; i < 1; i++) {
-                JSONObject photoInfo = datas.optJSONObject(i);
+            String locktime = json.optString("locktime");
+            String starttime = json.optString("starttime");
+            SPHelper.setOnOffTime(locktime, starttime);
+            BaseApp.getInstance().setClock();
 
-                RequestParams param = new RequestParams();
-                param.add("fileName", photoInfo.optString("photoName"));
-                param.add("deviceId", BaseApp.getDeviceId());
-                param.add("photoUrl", photoInfo.optString("photoUrl"));
-
-                File file = new File(HttpHelper.SAVEPATH,
-                        "pic" + System.currentTimeMillis() + ".zip");
-
-                String filename = photoInfo.optString("photoName");
-                MyFileHandler fileHandler = new MyFileHandler(file);
-                fileHandler.setFileName(filename);
-
-                HttpHelper.post(HttpHelper.GETZIP, param, fileHandler);
-            }
+            downloads = json.optJSONArray("undownloads");
+            downPack(downloads);
         }
 
         @Override
@@ -60,5 +56,51 @@ public class GetNewPhoto {
             super.onFailure(statusCode, headers, throwable, errorResponse);
         }
     };
+
+    /**
+     * 打包下载一组文件
+     *
+     */
+    private void downPack(JSONArray downloads) {
+        if (downloads != null && imageIndex < downloads.length()) {
+            JSONObject image = downloads.optJSONObject(imageIndex);
+
+            String guid = image.optString("guid");
+            String uid = image.optString("uid");
+            JSONArray msgs = image.optJSONArray("msgs");
+
+            if (msgs == null || msgs.length() == 0) return;
+
+            for (int i = 0; i < msgs.length(); i++) {
+                String url = msgs.optString(i);
+                String filename = guid + "_" + i + ".jpg";
+
+                File file = new File(HttpHelper.SAVEPATH, filename);
+                MyFileHandler handler = new MyFileHandler(file, i, this);
+
+                HttpHelper.get(url, handler);
+            }
+        }
+    }
+
+    /**
+     * 通知下载完成
+     */
+    public void notifyDone(){
+        Log.i("file", downed + " length = " + msgLength);
+        downed++;
+        if (downed >= msgLength){
+            //下载一个包完成了
+            gohead();
+        }
+    }
+
+    /**
+     * 继续下载更多的东西
+     */
+    public void gohead(){
+        imageIndex++;
+        downPack(downloads);
+    }
 
 }

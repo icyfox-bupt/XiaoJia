@@ -32,5 +32,7 @@ public class TimeTickReceiver extends BroadcastReceiver {
             UmengUpdateAgent.setUpdateCheckConfig(false);
             UmengUpdateAgent.update(context);
         }
+
+
     }
 }

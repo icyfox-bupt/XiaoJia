@@ -33,4 +33,10 @@ public class HttpHelper {
         Log.i("http","---------------post---------------");
         Log.i("http",url + "\n" + params.toString());
     }
+
+    public static void get(String url, AsyncHttpResponseHandler responseHandler) {
+        client.get(url, responseHandler);
+        Log.i("http","---------------get---------------");
+        Log.i("http",url);
+    }
 }

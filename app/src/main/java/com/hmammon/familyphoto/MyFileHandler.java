@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.hmammon.familyphoto.db.PhotoContract;
 import com.hmammon.familyphoto.db.PhotoDbHelper;
+import com.hmammon.familyphoto.http.GetNewPhoto;
 import com.hmammon.familyphoto.http.HttpHelper;
 import com.hmammon.familyphoto.http.UpdatePhoto;
 import com.hmammon.familyphoto.utils.BaseApp;
@@ -30,11 +31,15 @@ public class MyFileHandler extends FileAsyncHttpResponseHandler {
 
     private final SQLiteDatabase db;
     private String fileName;
+    private int index;
+    private GetNewPhoto gnp;
 
-    public MyFileHandler(File file) {
+    public MyFileHandler(File file, int index, GetNewPhoto gnp) {
         super(file);
         PhotoDbHelper dbhelper = new PhotoDbHelper(BaseApp.getInstance());
         db = dbhelper.getWritableDatabase();
+        this.index = index;
+        this.gnp = gnp;
     }
 
     public void setFileName(String name){
@@ -43,56 +48,18 @@ public class MyFileHandler extends FileAsyncHttpResponseHandler {
 
     @Override
     public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
-
+        gnp.notifyDone();
     }
 
     @Override
     public void onSuccess(int statusCode, Header[] headers, File file) {
-        try {
-            ZipFile zipFile = new ZipFile(file);
-            Enumeration enums = zipFile.entries();
-            while (enums.hasMoreElements()){
-                ZipEntry zipEntry = (ZipEntry) enums.nextElement();
-                Log.i("tag", "解压中..." + zipEntry.getName());
+        Log.i("file", "下载成功！" + file.getAbsolutePath());
+        gnp.notifyDone();
 
-                BufferedInputStream bis = new BufferedInputStream(zipFile.getInputStream(zipEntry));
-
-                int size;
-                byte[] buffer = new byte[2048];
-
-                FileOutputStream fos = new FileOutputStream(
-                        HttpHelper.SAVEPATH + "/" + zipEntry.getName());
-                BufferedOutputStream bos = new BufferedOutputStream(fos, buffer.length);
-
-                while ((size = bis.read(buffer, 0, buffer.length)) != -1) {
-                    bos.write(buffer, 0, size);
-                }
-
-                bos.flush();
-                bos.close();
-                fos.close();
-
-                bis.close();
-
-                saveInDb(HttpHelper.SAVEPATH + "/" + zipEntry.getName());
-            }
-
-            //删除临时的zip文件
-            file.delete();
-
-            //向服务器发送删除请求
-            UpdatePhoto up = new UpdatePhoto(fileName);
-            up.start();
-
-            //发送更新数据请求
-            Intent msg = new Intent();
-            msg.setAction(FileService.REFRESH);
-            BaseApp.getInstance().sendBroadcast(msg);
-
-        } catch (IOException e) {
-            Log.e("http","解压失败 " + file.getAbsolutePath());
-        }
-        Log.i("tag", file.getAbsolutePath());
+        //发送更新数据请求
+        Intent msg = new Intent();
+        msg.setAction(FileService.REFRESH);
+        BaseApp.getInstance().sendBroadcast(msg);
     }
 
     private void saveInDb(String path){

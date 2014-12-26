@@ -52,7 +52,7 @@ public class FileService extends Service {
     public void startDownload(){
         long now = System.currentTimeMillis();
         long last = sp.getLong(LASTTIME ,0L);
-        if (now - last < 60 * 1000L) return;
+        if (now - last < 6 * 1000L) return;
         else {
             Log.i("down","开始下载啦！" + now + " " + last);
             sp.edit().putLong(LASTTIME,now).commit();
