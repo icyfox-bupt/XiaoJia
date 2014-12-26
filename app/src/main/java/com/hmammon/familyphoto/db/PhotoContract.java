@@ -16,4 +16,6 @@ public class PhotoContract {
     public static final String COLUMN_NAME_PHOTO_NAME = "name";
     public static final String COLUMN_NAME_PHOTO_DESCRIPTION = "description";
     public static final String COLUMN_NAME_PHOTO_TIME = "time";
+    public static final String COLUMN_NAME_PHOTO_LIKE = "like";
+    public static final String COLUMN_NAME_PHOTO_SEE = "see";
 }

@@ -16,6 +16,7 @@ public class PhotoDbHelper extends SQLiteOpenHelper {
         //SQL语句
         private static final String TEXT_TYPE = " TEXT";
         private static final String LONG_TYPE = " LONG";
+        private static final String SHORT_TYPE = " SHORT";
         private static final String COMMA_SEP = ",";
         private static final String SQL_CREATE_ENTRIES =
                 "CREATE TABLE IF NOT EXISTS " + PhotoContract.TABLE_NAME + " (" +
@@ -26,6 +27,8 @@ public class PhotoDbHelper extends SQLiteOpenHelper {
                         PhotoContract.COLUMN_NAME_PHOTO_THUMB + TEXT_TYPE + COMMA_SEP +
                         PhotoContract.COLUMN_NAME_PHOTO_NAME + TEXT_TYPE + COMMA_SEP +
                         PhotoContract.COLUMN_NAME_PHOTO_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
+                        PhotoContract.COLUMN_NAME_PHOTO_LIKE + SHORT_TYPE + COMMA_SEP +
+                        PhotoContract.COLUMN_NAME_PHOTO_SEE + SHORT_TYPE + COMMA_SEP +
                         PhotoContract.COLUMN_NAME_PHOTO_TIME + LONG_TYPE +
                         ")";
 

@@ -53,9 +53,9 @@ public class PhotoAdapter extends BaseAdapter {
             vh = (ViewHolder) view.getTag();
         }
 
-        String path = "file://" + photos.get(i).path;
+        String thumb = "file://" + photos.get(i).thumb;
 
-        loader.displayImage(path, vh.iv);
+        loader.displayImage(thumb, vh.iv);
 
         return view;
     }

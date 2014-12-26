@@ -6,7 +6,7 @@ package com.hmammon.familyphoto;
  */
 public class Photo {
 
-    public String path, thumb;
+    public String path, thumb, guid , uid;
     public long lastsee;
     public long savetime;
 

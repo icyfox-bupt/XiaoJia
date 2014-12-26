@@ -92,6 +92,7 @@ public class GetNewPhoto {
         downed++;
         if (downed >= msgLength){
             //下载一个包完成了
+            new UpdatePhoto(guid).start();
             gohead();
         }
     }

@@ -5,6 +5,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.apache.http.Header;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -12,16 +13,23 @@ import org.json.JSONObject;
  */
 public class UpdatePhoto {
 
-    private String fileName;
+    private String guid;
 
-    public UpdatePhoto(String fileName) {
-        this.fileName = fileName;
+    public UpdatePhoto(String guid) {
+        this.guid = guid;
     }
 
     public void start() {
         RequestParams rp = new RequestParams();
         rp.add("deviceId", BaseApp.getDeviceId());
-        rp.add("photoName", fileName);
+
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put(guid, 2);
+        } catch (JSONException e) {
+        }
+        String update = obj.toString();
+        rp.add("update", update);
 
         HttpHelper.post(HttpHelper.UPDATE, rp, handler);
     }

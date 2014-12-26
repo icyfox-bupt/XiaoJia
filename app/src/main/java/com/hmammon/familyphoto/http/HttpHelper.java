@@ -15,10 +15,11 @@ public class HttpHelper {
     private static final String BASEURL = "http://211.103.218.91:442/";
     public static final String SYNC = BASEURL + "device/syncdevicecontent";
     public static final String INVITE = BASEURL + "device/invite";
+    public static final String UPDATE = BASEURL + "device/updatedevicecontent";
 
     public static final String GETPHOTO = BASEURL + "familyphoto/photo/Photos_getPhotos";
     public static final String GETZIP = BASEURL + "familyphoto/download/Download_download";
-    public static final String UPDATE = BASEURL + "familyphoto/photo/Photos_updatePhotos";
+//    public static final String UPDATE = BASEURL + "familyphoto/photo/Photos_updatePhotos";
 
     public static String SAVEPATH = Environment.getExternalStorageDirectory() + "/xiaojia";
 

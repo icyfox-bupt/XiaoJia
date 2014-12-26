@@ -1,5 +1,6 @@
 package com.hmammon.familyphoto.ui;
 
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
@@ -9,17 +10,10 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
-import android.net.NetworkInfo;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -32,6 +26,7 @@ import com.hmammon.familyphoto.R;
 import com.hmammon.familyphoto.db.PhotoContract;
 import com.hmammon.familyphoto.db.PhotoDbHelper;
 import com.hmammon.familyphoto.utils.BaseActivity;
+import com.hmammon.familyphoto.utils.BaseApp;
 import com.hmammon.familyphoto.utils.HorizontalListView;
 import com.hmammon.familyphoto.utils.ImageManager;
 import com.hmammon.familyphoto.utils.Tools;
@@ -40,7 +35,6 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 
 public class MainActivity extends BaseActivity {
@@ -120,7 +114,8 @@ public class MainActivity extends BaseActivity {
         db = mHelper.getWritableDatabase();
 
         String[] projection = {
-                PhotoContract.COLUMN_NAME_PHOTO_PATH
+                PhotoContract.COLUMN_NAME_PHOTO_PATH,
+                PhotoContract.COLUMN_NAME_PHOTO_THUMB
         };
 
         String sortOrder = PhotoContract.COLUMN_NAME_PHOTO_TIME + " DESC";
@@ -144,6 +139,7 @@ public class MainActivity extends BaseActivity {
         while (c.moveToNext()){
             Photo p = new Photo();
             p.path = c.getString(0);
+            p.thumb = c.getString(1);
             photos.add(p);
         }
 
@@ -222,6 +218,9 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);
+
+        new AlertDialog.Builder(this).setMessage("本机的ID为：\n" +
+                BaseApp.getDeviceId()).show();
     }
 
     @Override
