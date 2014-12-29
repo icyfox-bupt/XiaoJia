@@ -1,10 +1,13 @@
 package com.hmammon.familyphoto.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -30,6 +33,8 @@ public class SMSFragment extends BaseFragment implements View.OnClickListener{
     private View view;
     private Button btnSend, btnSkip;
     private EditText etPhone;
+    private View base;
+    InputMethodManager imm;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,20 +48,27 @@ public class SMSFragment extends BaseFragment implements View.OnClickListener{
         btnSend = (Button) view.findViewById(R.id.btn_send);
         btnSkip = (Button) view.findViewById(R.id.btn_skip);
         etPhone = (EditText) view.findViewById(R.id.et_phone);
+        base = view.findViewById(R.id.base);
 
         btnSend.setOnClickListener(this);
         btnSkip.setOnClickListener(this);
+        base.setOnClickListener(this);
         return view;
     }
 
     @Override
     public void onClick(View view) {
+        hideKeyBoard();
+        if (view == base){
+        }
+
         if (view == btnSend){
             sendSMS();
         }
 
         if (view == btnSkip){
-
+           getActivity().getFragmentManager().beginTransaction()
+                   .remove(this).commit();
         }
     }
 
@@ -98,4 +110,20 @@ public class SMSFragment extends BaseFragment implements View.OnClickListener{
             showToast("网络错误" + statusCode);
         }
     };
+
+    void hideKeyBoard(){
+        imm.hideSoftInputFromInputMethod(getView().getWindowToken(), 0);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
+        getActivity().getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+        );
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+    }
+
 }

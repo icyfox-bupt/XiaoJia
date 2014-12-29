@@ -8,7 +8,8 @@
     <string name="btn_connect">连接Wi-Fi</string>
     <string name="passtip">请输入您的Wi-Fi密码</string>
     <string name="phonetip">请输入您子女的手机号码</string>
-    <string name="sendtip">输入子女的手机号码可以发送手机短信给子女，您也可以选择不发送</string>
+    <string name="nopictip">现在还没有照片哦～\n快提醒孩子们发照片过来吧～</string>
+    <string name="sendtip">输入子女的手机号码可以发送手机短信给子女，\n您也可以选择不发送</string>
     <string name="confirm">确认</string>
     <string name="action_settings">Settings</string>
 

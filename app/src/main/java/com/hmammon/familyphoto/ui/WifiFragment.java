@@ -3,6 +3,7 @@ package com.hmammon.familyphoto.ui;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -44,7 +45,7 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
     private Button btnConnect, btnExit, btnConn;
     private View llDetail;
     private List<ScanResult> wifiScanList;
-    private Activity activity;
+    private MainActivity activity;
     private WifiReceiver wifiReceiver;
     private final int SECURITY_NONE = 0, SECURITY_WEP = 1, SECURITY_PSK = 2, SECURITY_EAP = 3;
     private WifiManager wifiMana;
@@ -55,13 +56,10 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
     private ScanResult choose;
     private ProgressDialog dialog;
 
-    public WifiFragment() {
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activity = getActivity();
+        activity = (MainActivity) getActivity();
         fragName = "WifiSetting";
 
         wifiReceiver = new WifiReceiver();
@@ -96,14 +94,6 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
     @Override
     public void onResume() {
         super.onResume();
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        activity.registerReceiver(wifiReceiver, intentFilter);
-        wifiMana.startScan();
     }
 
     @Override
@@ -117,6 +107,14 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
         if (view == btnConnect){
             llDetail.setVisibility(View.VISIBLE);
             btnConnect.setVisibility(View.GONE);
+
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+            intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+            intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+            intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+            activity.registerReceiver(wifiReceiver, intentFilter);
+            wifiMana.startScan();
         }
 
         else if (view == btnExit){
@@ -221,6 +219,7 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
                     if (info.isConnected()) {
                         showToast(info.getDetailedState());
                         dialog.dismiss();
+                        startSMS();
                     }
                 }
             }
@@ -288,6 +287,13 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
                 break;
             }
         }
+    }
+
+    private void startSMS(){
+        activity.fragSMS = new SMSFragment();
+        FragmentTransaction trans = activity.getFragmentManager().beginTransaction();
+        trans.remove(activity.fragWifi);
+        trans.add(R.id.container, activity.fragSMS).commit();
     }
 
 }

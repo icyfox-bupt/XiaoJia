@@ -1,6 +1,7 @@
 package com.hmammon.familyphoto.ui;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
@@ -45,11 +46,12 @@ public class MainActivity extends BaseActivity {
     private ImageView iv;
     private ArrayList<Photo> photos;
     private ImageLoader loader;
-    private boolean isOpen;
+    private boolean isOpen = true, isFirst;
     private Button btnWifi;
     private ImageManager manager;
     private FragmentManager fragMana;
     private FrameLayout topbar;
+    public Fragment fragWifi, fragNopic, fragSMS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,10 @@ public class MainActivity extends BaseActivity {
         btnWifi = (Button)findViewById(R.id.btn_wifi);
         topbar = (FrameLayout) findViewById(R.id.topbar);
 
+        fragNopic = new NopicFragment();
+        fragSMS = new SMSFragment();
+        fragWifi = new WifiFragment();
+
         refreshDb();
 
         adapter = new PhotoAdapter(photos, this);
@@ -74,10 +80,11 @@ public class MainActivity extends BaseActivity {
         btnWifi.setOnClickListener(clickListener);
 
         manager = new ImageManager(iv, this, photos);
-        toggle();
 
         if (photos.size() > 0)
             loader.displayImage("file://" + photos.get(0).path, iv);
+        else
+            iv.setImageResource(R.drawable.bg_nopic);
 
         //友盟更新
         UmengUpdateAgent.setUpdateCheckConfig(false);
@@ -101,7 +108,7 @@ public class MainActivity extends BaseActivity {
            }
            else if (view.getId() == R.id.btn_wifi){
                FragmentTransaction ft = fragMana.beginTransaction();
-               ft.add(R.id.container, new WifiFragment());
+               ft.add(R.id.container, fragWifi);
                ft.commit();
            }
         }
@@ -147,6 +154,9 @@ public class MainActivity extends BaseActivity {
         for (int i = 0 ;i <photos.size();i++){
             Log.i("path", photos.get(i).path);
         }
+
+        if (photos.size() == 0)
+            fragMana.beginTransaction().add(R.id.container, fragNopic).commit();
 
         c.close();
         db.close();
@@ -219,9 +229,6 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);
-
-        new AlertDialog.Builder(this).setMessage("本机的ID为：\n" +
-                BaseApp.getDeviceId()).show();
     }
 
     @Override
@@ -240,4 +247,16 @@ public class MainActivity extends BaseActivity {
     }
     }
 
+    /**
+     * 防止在OnCreate里写导致View得不到实际高度的情况
+     * @param hasFocus
+     */
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (!isFirst) {
+            toggle();
+            isFirst = true;
+        }
+    }
 }

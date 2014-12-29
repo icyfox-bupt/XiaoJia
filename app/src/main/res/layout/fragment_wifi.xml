@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#A000"
+    android:background="#80000000"
     tools:context="com.hmammon.familyphoto.ui.WifiFragment">
 
     <Button
@@ -90,7 +90,7 @@
         android:layout_margin="5dp"
         android:background="@drawable/selector_btn"
         android:textColor="@color/white"
-        android:layout_gravity="left|bottom" />
+        android:layout_gravity="left|top" />
 
 
 </FrameLayout>
