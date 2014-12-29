@@ -2,6 +2,7 @@ package com.hmammon.familyphoto.ui;
 
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,7 +14,6 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,9 +25,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hmammon.familyphoto.R;
+import com.hmammon.familyphoto.utils.BaseFragment;
 import com.hmammon.familyphoto.utils.WifiComparator;
 import com.hmammon.familyphoto.utils.WifiHelper;
 
@@ -37,7 +37,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class WifiFragment extends Fragment implements View.OnClickListener
+public class WifiFragment extends BaseFragment implements View.OnClickListener
                                             , AdapterView.OnItemClickListener{
 
     private View view;
@@ -62,6 +62,7 @@ public class WifiFragment extends Fragment implements View.OnClickListener
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = getActivity();
+        fragName = "WifiSetting";
 
         wifiReceiver = new WifiReceiver();
 
@@ -289,8 +290,4 @@ public class WifiFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    private void showToast(Object msg){
-        Toast.makeText(activity, msg+"" , Toast.LENGTH_SHORT)
-                .show();
-    }
 }

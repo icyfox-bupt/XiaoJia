@@ -7,6 +7,9 @@
     <string name="exit">退出</string>
     <string name="btn_connect">连接Wi-Fi</string>
     <string name="passtip">请输入您的Wi-Fi密码</string>
+    <string name="phonetip">请输入您子女的手机号码</string>
+    <string name="sendtip">输入子女的手机号码可以发送手机短信给子女，您也可以选择不发送</string>
+    <string name="confirm">确认</string>
     <string name="action_settings">Settings</string>
 
 </resources>

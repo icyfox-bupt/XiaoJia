@@ -82,6 +82,7 @@ public class MainActivity extends BaseActivity {
         //友盟更新
         UmengUpdateAgent.setUpdateCheckConfig(false);
         UmengUpdateAgent.update(this);
+        MobclickAgent.updateOnlineConfig(this);
     }
 
     private AdapterView.OnItemClickListener itListener = new AdapterView.OnItemClickListener() {
