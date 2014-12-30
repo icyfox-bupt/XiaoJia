@@ -1,11 +1,17 @@
 package com.hmammon.familyphoto;
 
 import android.app.Activity;
+import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.hmammon.familyphoto.utils.ImageHelper;
+import com.hmammon.familyphoto.utils.Tools;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
@@ -18,6 +24,7 @@ public class PhotoAdapter extends BaseAdapter {
     List<Photo> photos;
     Activity activity;
     ImageLoader loader;
+    private int checked = 0;
 
     public PhotoAdapter(List<Photo> path, Activity activity) {
         this.photos = path;
@@ -48,23 +55,38 @@ public class PhotoAdapter extends BaseAdapter {
             view = activity.getLayoutInflater().inflate(R.layout.item_preview, null);
             vh = new ViewHolder();
             vh.iv = (ImageView) view.findViewById(R.id.iv_pre);
+            vh.card = (CardView) view.findViewById(R.id.card);
             view.setTag(vh);
         }else {
             vh = (ViewHolder) view.getTag();
         }
 
         String thumb = "file://" + photos.get(i).thumb;
+        loader.displayImage(thumb, vh.iv, ImageHelper.smallOptions);
 
-        loader.displayImage(thumb, vh.iv);
+        //动态改变图片大小
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) vh.card.getLayoutParams();
+        int normalSize = Tools.dp2px(activity, 100);
+        int bigSize = Tools.dp2px(activity, 120);
+        if (i == checked){
+            lp.width = bigSize;
+            lp.height = bigSize;
+        }else{
+            lp.width = normalSize;
+            lp.height = normalSize;
+        }
+
+        view.measure(-2, -2);
 
         return view;
     }
 
     static class ViewHolder{
         ImageView iv;
+        CardView card;
     }
 
-    public void setPhotos(List<Photo> photos) {
-        this.photos = photos;
+    public void setChecked(int checked) {
+        this.checked = checked;
     }
 }

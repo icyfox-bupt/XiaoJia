@@ -27,14 +27,14 @@ public class ImageHelper {
     static File cacheDir = StorageUtils.getCacheDirectory(context);
 
     public static DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .showImageOnLoading(R.drawable.ic_loading) // resource or drawable
-            .showImageForEmptyUri(R.drawable.ic_loading) // resource or drawable
-            .showImageOnFail(R.drawable.ic_loading) // resource or drawable
+//            .showImageOnLoading(R.drawable.ic_loading) // resource or drawable
+//            .showImageForEmptyUri(R.drawable.ic_loading) // resource or drawable
+//            .showImageOnFail(R.drawable.ic_loading) // resource or drawable
             .resetViewBeforeLoading(false)  // default
             .delayBeforeLoading(0)
-            .cacheInMemory(true) // default
+            .cacheInMemory(false) // default
             .cacheOnDisk(false) // default
-            .considerExifParams(false) // default
+            .considerExifParams(true) // default
             .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2) // default
             .bitmapConfig(Bitmap.Config.ARGB_8888) // default
             .displayer(new SimpleBitmapDisplayer()) // default
@@ -42,15 +42,15 @@ public class ImageHelper {
             .build();
 
     public static ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
-            .memoryCacheExtraOptions(480, 800) // default = device screen dimensions
+            .memoryCacheExtraOptions(200, 200) // default = device screen dimensions
             .diskCacheExtraOptions(480, 800, null)
             .threadPoolSize(3) // default
             .threadPriority(Thread.NORM_PRIORITY - 2) // default
             .tasksProcessingOrder(QueueProcessingType.FIFO) // default
             .denyCacheImageMultipleSizesInMemory()
-            .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
-            .memoryCacheSize(2 * 1024 * 1024)
-            .memoryCacheSizePercentage(13) // default
+            .memoryCache(new LruMemoryCache(50 * 1024 * 1024))
+            .memoryCacheSize(50 * 1024 * 1024)
+            .memoryCacheSizePercentage(80) // default
             .diskCache(new UnlimitedDiscCache(cacheDir)) // default
             .diskCacheSize(50 * 1024 * 1024)
             .diskCacheFileCount(100)
@@ -58,5 +58,20 @@ public class ImageHelper {
             .imageDownloader(new BaseImageDownloader(context)) // default
             .defaultDisplayImageOptions(DisplayImageOptions.createSimple()) // default
             .writeDebugLogs()
+            .build();
+
+    public static DisplayImageOptions smallOptions = new DisplayImageOptions.Builder()
+//            .showImageOnLoading(R.drawable.ic_loading) // resource or drawable
+//            .showImageForEmptyUri(R.drawable.ic_loading) // resource or drawable
+//            .showImageOnFail(R.drawable.ic_loading) // resource or drawable
+            .resetViewBeforeLoading(false)  // default
+            .delayBeforeLoading(0)
+            .cacheInMemory(true) // default
+            .cacheOnDisk(false) // default
+            .considerExifParams(true) // default
+            .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2) // default
+            .bitmapConfig(Bitmap.Config.ARGB_8888) // default
+            .displayer(new SimpleBitmapDisplayer()) // default
+            .handler(new Handler()) // default
             .build();
 }

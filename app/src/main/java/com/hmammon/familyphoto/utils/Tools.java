@@ -1,6 +1,7 @@
 package com.hmammon.familyphoto.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Point;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -25,6 +26,11 @@ public class Tools {
         } catch (Exception ignored) {
         }
         return realSize;
+    }
+
+    public static int dp2px(Context context, int dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
     }
 
 }

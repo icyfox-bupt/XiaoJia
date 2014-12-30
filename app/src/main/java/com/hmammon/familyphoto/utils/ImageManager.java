@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.hmammon.familyphoto.Photo;
+import com.hmammon.familyphoto.ui.MainActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
@@ -17,26 +18,27 @@ import java.util.Random;
  */
 public class ImageManager {
 
-    Activity activity;
+    MainActivity activity;
     ImageView imageView;
     ImageLoader loader;
     boolean isRun = false;
-    private int duration = 10000;
+    private int duration = 4000;
     List<Photo> photos;
     private Timer timer;
     private int current = 0;
 
-    public ImageManager(ImageView imageView, Activity activity, List<Photo> photos) {
+    public ImageManager(ImageView imageView, MainActivity activity, List<Photo> photos) {
         this.imageView = imageView;
         this.activity = activity;
         this.loader = ImageLoader.getInstance();
         this.photos = photos;
     }
 
-    public void next(){
+    private void next(){
         current++;
         if (current > photos.size() - 1) current = 0;
         display(current);
+        activity.lightView(current);
     }
 
     public void previous(){
@@ -56,6 +58,8 @@ public class ImageManager {
     }
 
     public void show(int index){
+        if (current == index) return;
+        current = index;
         display(index);
     }
 

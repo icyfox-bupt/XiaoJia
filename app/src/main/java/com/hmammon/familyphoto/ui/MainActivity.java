@@ -25,6 +25,7 @@ import com.hmammon.familyphoto.R;
 import com.hmammon.familyphoto.db.PhotoDbHelper;
 import com.hmammon.familyphoto.utils.BaseActivity;
 import com.hmammon.familyphoto.utils.HorizontalListView;
+import com.hmammon.familyphoto.utils.ImageHelper;
 import com.hmammon.familyphoto.utils.ImageManager;
 import com.hmammon.familyphoto.utils.Tools;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -48,6 +49,7 @@ public class MainActivity extends BaseActivity {
     private FragmentManager fragMana;
     private FrameLayout topbar;
     public Fragment fragWifi, fragNopic, fragSMS;
+    private int bigItem = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,13 +74,14 @@ public class MainActivity extends BaseActivity {
         adapter = new PhotoAdapter(photos, this);
         list.setAdapter(adapter);
         list.setOnItemClickListener(itListener);
+        list.setOnItemLongClickListener(ilListener);
 
         iv.setOnClickListener(clickListener);
         btnWifi.setOnClickListener(clickListener);
 
 
         if (photos.size() > 0)
-            loader.displayImage("file://" + photos.get(0).path, iv);
+            loader.displayImage("file://" + photos.get(0).path, iv, ImageHelper.options);
         else
             iv.setImageResource(R.drawable.bg_nopic);
 
@@ -92,7 +95,19 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            if (bigItem == position) return;
             manager.show(position);
+            lightView(position);
+        }
+    };
+
+    private AdapterView.OnItemLongClickListener ilListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+            if (bigItem == i) return false;
+            manager.show(i);
+            lightView(i);
+            return false;
         }
     };
 
@@ -219,5 +234,62 @@ public class MainActivity extends BaseActivity {
             toggle();
             isFirst = true;
         }
+    }
+
+    /**
+     * 设置某个list item为高亮显示
+     * @param position
+     */
+    public void lightView(int position){
+        adapter.setChecked(position);
+        adapter.notifyDataSetChanged();
+        list.invalidate();
+
+        /*
+        int top = list.getFirstVisiblePosition();
+        int bottom = list.getLastVisiblePosition();
+
+        View child1, child2, card1, card2, tmp1, tmp2;
+
+        //先设置已经变大的变小
+        if (bigItem >= top && bigItem <= bottom) {
+            child1 = list.getChildAt(bigItem - top);
+            card1 = child1.findViewById(R.id.card);
+            tmp1 = child1.findViewById(R.id.tmp);
+
+            Log.w("size1", child1.getMeasuredWidth() + " - " + child1.getMeasuredHeight() + " - " + card1.getMeasuredWidth() + " - " + card1.getMeasuredHeight()
+                    + " - " + tmp1.getMeasuredWidth() + " - " + tmp1.getMeasuredWidth());
+
+            FrameLayout.LayoutParams lp1 = (FrameLayout.LayoutParams) card1.getLayoutParams();
+            int smallSize = Tools.dp2px(this, 50);
+            lp1.width = smallSize;
+            lp1.height = smallSize;
+            card1.setLayoutParams(lp1);
+            child1.measure(-2, -2);
+
+            Log.w("size1", child1.getMeasuredWidth() + " - " + child1.getMeasuredHeight() + " - " + card1.getMeasuredWidth() + " - " + card1.getMeasuredHeight()
+                    + " - " + tmp1.getMeasuredWidth() + " - " + tmp1.getMeasuredWidth());
+        }
+
+        //再设置小的变大
+        child2 = list.getChildAt(position - top);
+        card2 = child2.findViewById(R.id.card);
+        tmp2 = child2.findViewById(R.id.tmp);
+
+        Log.w("size2", child2.getMeasuredWidth() + " - " + child2.getMeasuredHeight() + " - " + card2.getMeasuredWidth() + " - " + card2.getMeasuredHeight()
+                + " - " + tmp2.getMeasuredWidth() + " - " + tmp2.getMeasuredWidth());
+
+        FrameLayout.LayoutParams lp2 = (FrameLayout.LayoutParams) card2.getLayoutParams();
+        int bigSize = Tools.dp2px(this, 120);
+        lp2.width = bigSize;
+        lp2.height = bigSize;
+        card2.setLayoutParams(lp2);
+        child2.measure(-2, -2);
+
+        bigItem = position;
+
+        Log.w("size2", child2.getMeasuredWidth() + " - " + child2.getMeasuredHeight() + " - " + card2.getMeasuredWidth() + " - " + card2.getMeasuredHeight()
+                + " - " + tmp2.getMeasuredWidth() + " - " + tmp2.getMeasuredWidth());
+*/
     }
 }
