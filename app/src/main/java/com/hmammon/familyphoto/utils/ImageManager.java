@@ -94,4 +94,8 @@ public class ImageManager {
     private void display(int index){
         loader.displayImage("file://" + photos.get(index).path, imageView);
     }
+
+    public void setPhotos(List<Photo> photos) {
+        this.photos = photos;
+    }
 }

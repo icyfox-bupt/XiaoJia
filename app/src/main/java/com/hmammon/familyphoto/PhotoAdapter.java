@@ -63,4 +63,8 @@ public class PhotoAdapter extends BaseAdapter {
     static class ViewHolder{
         ImageView iv;
     }
+
+    public void setPhotos(List<Photo> photos) {
+        this.photos = photos;
+    }
 }

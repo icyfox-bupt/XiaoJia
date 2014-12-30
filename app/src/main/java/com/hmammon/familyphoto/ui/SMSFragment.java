@@ -69,6 +69,7 @@ public class SMSFragment extends BaseFragment implements View.OnClickListener{
         if (view == btnSkip){
            getActivity().getFragmentManager().beginTransaction()
                    .remove(this).commit();
+            hideKeyBoard();
         }
     }
 
@@ -87,6 +88,11 @@ public class SMSFragment extends BaseFragment implements View.OnClickListener{
 
     }
 
+    /**
+     * 使用正则表达式判断手机号是否合法
+     * @param mobiles
+     * @return
+     */
     public boolean isMobileNO(String mobiles) {
         if (mobiles.length() != 11) return false;
         if (!TextUtils.isDigitsOnly(mobiles)) return false;
@@ -111,13 +117,11 @@ public class SMSFragment extends BaseFragment implements View.OnClickListener{
         }
     };
 
+    /**
+     * 隐藏软键盘
+     */
     void hideKeyBoard(){
-        imm.hideSoftInputFromInputMethod(getView().getWindowToken(), 0);
-        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-
-        getActivity().getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
-        );
+        imm.hideSoftInputFromWindow(etPhone.getWindowToken(), 0);
     }
 
     @Override

@@ -1,7 +1,5 @@
 package com.hmammon.familyphoto.ui;
 
-
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
@@ -19,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -55,6 +54,7 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
     private EditText etPass;
     private ScanResult choose;
     private ProgressDialog dialog;
+    private InputMethodManager imm;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,7 +99,9 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
     @Override
     public void onPause() {
         super.onPause();
-        activity.unregisterReceiver(wifiReceiver);
+        try {
+            activity.unregisterReceiver(wifiReceiver);
+        }catch (Exception ignore){}
     }
 
     @Override
@@ -115,10 +117,13 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
             intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
             activity.registerReceiver(wifiReceiver, intentFilter);
             wifiMana.startScan();
+
+            hideKeyBoard();
         }
 
         else if (view == btnExit){
             getActivity().getFragmentManager().beginTransaction().remove(this).commit();
+            hideKeyBoard();
         }
 
         else if (view == btnConn){
@@ -129,6 +134,7 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
             }
             connect(choose, pass);
             dialog.show();
+            hideKeyBoard();
         }
     }
 
@@ -294,6 +300,20 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
         FragmentTransaction trans = activity.getFragmentManager().beginTransaction();
         trans.remove(activity.fragWifi);
         trans.add(R.id.container, activity.fragSMS).commit();
+    }
+
+    /**
+     * 隐藏软键盘
+     */
+    void hideKeyBoard(){
+        imm.hideSoftInputFromWindow(etPass.getWindowToken(), 0);
+    }
+
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
 }

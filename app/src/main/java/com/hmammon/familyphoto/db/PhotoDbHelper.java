@@ -1,9 +1,15 @@
 package com.hmammon.familyphoto.db;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import com.hmammon.familyphoto.Photo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by icyfox on 2014/12/3.
@@ -47,11 +53,100 @@ public class PhotoDbHelper extends SQLiteOpenHelper {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
         Log.i("db","update");
-        db.execSQL(SQL_ADD_THUMBS);
+//        db.execSQL(SQL_ADD_THUMBS);
         onCreate(db);
     }
 
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
     }
+
+    public ArrayList<Photo> getPhotoInDb(ArrayList<Photo> photos){
+        SQLiteDatabase db = getWritableDatabase();
+
+        String[] projection = {
+                PhotoContract.COLUMN_NAME_PHOTO_PATH,
+                PhotoContract.COLUMN_NAME_PHOTO_THUMB
+        };
+
+        String sortOrder = PhotoContract.COLUMN_NAME_PHOTO_TIME + " DESC";
+
+        Cursor c = db.query(
+                PhotoContract.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                sortOrder
+        );
+
+        if (photos == null)
+            photos = new ArrayList<>();
+        else photos.clear();
+
+        while (c.moveToNext()){
+            Photo p = new Photo();
+            p.path = c.getString(0);
+            p.thumb = c.getString(1);
+            photos.add(p);
+        }
+
+        c.close();
+        db.close();
+        return photos;
+    }
+
+    /**
+     * 根据guid删除数据库中照片
+     * @param delGuid
+     */
+    public int delInDb(String delGuid) {
+        SQLiteDatabase db = getWritableDatabase();
+        String[] args = {delGuid};
+        int num =  db.delete(PhotoContract.TABLE_NAME, PhotoContract.COLUMN_NAME_PHOTO_GUID + "=?", args);
+        db.close();
+        return num;
+    }
+
+    /**
+     * 通过GUID获得照片信息
+     * @return
+     */
+    public ArrayList<Photo> getPhotoByGuid(String guid){
+        SQLiteDatabase db = getWritableDatabase();
+
+        String[] projection = {
+                PhotoContract.COLUMN_NAME_PHOTO_PATH,
+                PhotoContract.COLUMN_NAME_PHOTO_THUMB
+        };
+
+        String sortOrder = PhotoContract.COLUMN_NAME_PHOTO_TIME + " DESC";
+        String whereClause = PhotoContract.COLUMN_NAME_PHOTO_GUID + "=?";
+        String [] whereArgs = {guid};
+
+        Cursor c = db.query(
+                PhotoContract.TABLE_NAME,
+                projection,
+                whereClause,
+                whereArgs,
+                null,
+                null,
+                sortOrder
+        );
+
+        ArrayList<Photo> photos = new ArrayList<>();
+
+        while (c.moveToNext()){
+            Photo p = new Photo();
+            p.path = c.getString(0);
+            p.thumb = c.getString(1);
+            photos.add(p);
+        }
+
+        c.close();
+        db.close();
+        return photos;
+    }
+
 }

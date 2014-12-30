@@ -48,8 +48,14 @@ public class GetNewPhoto {
             SPHelper.setOnOffTime(locktime, starttime);
             BaseApp.getInstance().setClock();
 
+            //下载新图片
             downloads = json.optJSONArray("undownloads");
             downPack(downloads);
+
+            //删除旧照片
+            JSONArray deletes = json.optJSONArray("deleteds");
+            DeletePhoto dp = new DeletePhoto(deletes);
+            dp.start();
         }
 
         @Override
@@ -92,7 +98,7 @@ public class GetNewPhoto {
         downed++;
         if (downed >= msgLength){
             //下载一个包完成了
-            new UpdatePhoto(guid).start();
+            new UpdatePhoto(guid, UpdatePhoto.TYPE_GET).start();
             gohead();
         }
     }

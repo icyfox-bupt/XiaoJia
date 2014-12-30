@@ -1,6 +1,5 @@
 package com.hmammon.familyphoto.ui;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -8,7 +7,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -24,10 +22,8 @@ import com.hmammon.familyphoto.FileService;
 import com.hmammon.familyphoto.Photo;
 import com.hmammon.familyphoto.PhotoAdapter;
 import com.hmammon.familyphoto.R;
-import com.hmammon.familyphoto.db.PhotoContract;
 import com.hmammon.familyphoto.db.PhotoDbHelper;
 import com.hmammon.familyphoto.utils.BaseActivity;
-import com.hmammon.familyphoto.utils.BaseApp;
 import com.hmammon.familyphoto.utils.HorizontalListView;
 import com.hmammon.familyphoto.utils.ImageManager;
 import com.hmammon.familyphoto.utils.Tools;
@@ -70,6 +66,7 @@ public class MainActivity extends BaseActivity {
         fragSMS = new SMSFragment();
         fragWifi = new WifiFragment();
 
+        manager = new ImageManager(iv, this, photos);
         refreshDb();
 
         adapter = new PhotoAdapter(photos, this);
@@ -79,7 +76,6 @@ public class MainActivity extends BaseActivity {
         iv.setOnClickListener(clickListener);
         btnWifi.setOnClickListener(clickListener);
 
-        manager = new ImageManager(iv, this, photos);
 
         if (photos.size() > 0)
             loader.displayImage("file://" + photos.get(0).path, iv);
@@ -119,47 +115,12 @@ public class MainActivity extends BaseActivity {
      */
     private void refreshDb(){
         PhotoDbHelper mHelper = new PhotoDbHelper(this);
-        db = mHelper.getWritableDatabase();
-
-        String[] projection = {
-                PhotoContract.COLUMN_NAME_PHOTO_PATH,
-                PhotoContract.COLUMN_NAME_PHOTO_THUMB
-        };
-
-        String sortOrder = PhotoContract.COLUMN_NAME_PHOTO_TIME + " DESC";
-
-        Cursor c = db.query(
-                PhotoContract.TABLE_NAME,
-                projection,
-                null,
-                null,
-                null,
-                null,
-                sortOrder
-        );
-
-        if (photos == null)
-            photos = new ArrayList<>();
-        else{
-            photos.clear();
-        }
-
-        while (c.moveToNext()){
-            Photo p = new Photo();
-            p.path = c.getString(0);
-            p.thumb = c.getString(1);
-            photos.add(p);
-        }
-
-        for (int i = 0 ;i <photos.size();i++){
-            Log.i("path", photos.get(i).path);
-        }
+        photos = mHelper.getPhotoInDb(photos);
 
         if (photos.size() == 0)
             fragMana.beginTransaction().add(R.id.container, fragNopic).commit();
 
-        c.close();
-        db.close();
+        manager.setPhotos(photos);
     }
 
     /**

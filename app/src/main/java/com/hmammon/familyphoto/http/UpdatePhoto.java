@@ -5,6 +5,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.apache.http.Header;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,22 +15,35 @@ import org.json.JSONObject;
 public class UpdatePhoto {
 
     private String guid;
+    private int type;
+    public static final int TYPE_GET = 0, TYPE_DELETE = 1;
 
-    public UpdatePhoto(String guid) {
+    public UpdatePhoto(String guid, int type) {
         this.guid = guid;
+        this.type = type;
     }
 
     public void start() {
         RequestParams rp = new RequestParams();
         rp.add("deviceId", BaseApp.getDeviceId());
+        String update = "";
 
-        JSONObject obj = new JSONObject();
-        try {
-            obj.put(guid, 2);
-        } catch (JSONException e) {
+        if (type == TYPE_GET) {
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put(guid, 2);
+            } catch (JSONException e) {
+            }
+
+            update = obj.toString();
+            rp.add("update", update);
         }
-        String update = obj.toString();
-        rp.add("update", update);
+        else{
+            JSONArray arr = new JSONArray();
+            arr.put("guid");
+            update = arr.toString();
+            rp.add("deleted", update);
+        }
 
         HttpHelper.post(HttpHelper.UPDATE, rp, handler);
     }

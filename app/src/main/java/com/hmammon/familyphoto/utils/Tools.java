@@ -22,9 +22,6 @@ public class Tools {
             d.getMetrics(metrics);
             realSize = new Point();
             Display.class.getMethod("getRealSize", Point.class).invoke(d, realSize);
-            int widthPixels = realSize.x;
-            int heightPixels = realSize.y;
-            Log.i("size", widthPixels + " " + heightPixels);
         } catch (Exception ignored) {
         }
         return realSize;

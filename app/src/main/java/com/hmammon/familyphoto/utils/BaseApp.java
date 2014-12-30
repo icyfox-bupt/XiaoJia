@@ -50,7 +50,6 @@ public class BaseApp extends Application {
 
     public static String getDeviceId(){
         String id = Build.SERIAL;
-//        return "411395135442c770b08";
         return id;
     }
 
