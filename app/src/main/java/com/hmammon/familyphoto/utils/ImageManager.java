@@ -22,7 +22,7 @@ public class ImageManager {
     ImageView imageView;
     ImageLoader loader;
     boolean isRun = false;
-    private int duration = 4000;
+    private final int duration = 10000;
     List<Photo> photos;
     private Timer timer;
     private int current = 0;
