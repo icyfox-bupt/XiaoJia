@@ -40,7 +40,7 @@
             android:layout_width="186px"
             android:layout_height="65px"
             android:layout_gravity="start"
-            android:background="@drawable/bg_btn_refresh" />
+            android:background="@drawable/selector_btn_refresh" />
 
         <Button
             android:id="@+id/btn_wifi"

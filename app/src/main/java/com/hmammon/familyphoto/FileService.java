@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.hmammon.familyphoto.http.GetNewPhoto;
 import com.hmammon.familyphoto.receivers.TimeTickReceiver;
+import com.hmammon.familyphoto.utils.BaseApp;
 
 public class FileService extends Service {
 
@@ -18,12 +19,17 @@ public class FileService extends Service {
     private SharedPreferences sp;
     private final String LASTTIME = "lasttime";
     public static final String REFRESH = "action_refresh";
+    public static final String START_DOWN = "start_down";
+    public static final String STOP_DOWN = "stop_down";
+    public boolean isDownloading = false;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        Log.i("ser","被启动了!");
+        Log.i("ser", "被启动了!");
+
+        BaseApp.getInstance().service = this;
 
         receiver = new TimeTickReceiver(this);
         IntentFilter ift = new IntentFilter();
@@ -37,7 +43,7 @@ public class FileService extends Service {
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
-        Log.i("ser","被结束了!");
+        Log.i("ser", "被结束了!");
     }
 
     @Override
@@ -49,15 +55,31 @@ public class FileService extends Service {
     /**
      * 开始下载进程
      */
-    public void startDownload(){
+    public void startDownload() {
         long now = System.currentTimeMillis();
-        long last = sp.getLong(LASTTIME ,0L);
-        if (now - last < 60 * 1000L) return;
+        long last = sp.getLong(LASTTIME, 0L);
+        if (now - last < 6000 * 1000L) return;
         else {
-            Log.i("down","开始下载啦！" + now + " " + last);
-            sp.edit().putLong(LASTTIME,now).commit();
+            isDownloading = true;
+            BaseApp.getInstance().activity.setDownloading(true);
+            Log.i("down", "开始下载啦！" + now + " " + last);
+            sp.edit().putLong(LASTTIME, now).commit();
             new GetNewPhoto().start();
         }
+    }
+
+    /**
+     * 手动开始下载
+     */
+    public void startManual() {
+        if (isDownloading) return;
+        long now = System.currentTimeMillis();
+
+        isDownloading = true;
+        BaseApp.getInstance().activity.setDownloading(true);
+        Log.i("down", "开始下载啦！" + now);
+        sp.edit().putLong(LASTTIME, now).commit();
+        new GetNewPhoto().start();
     }
 
 }

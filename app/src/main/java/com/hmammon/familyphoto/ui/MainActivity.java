@@ -24,6 +24,7 @@ import com.hmammon.familyphoto.PhotoAdapter;
 import com.hmammon.familyphoto.R;
 import com.hmammon.familyphoto.db.PhotoDbHelper;
 import com.hmammon.familyphoto.utils.BaseActivity;
+import com.hmammon.familyphoto.utils.BaseApp;
 import com.hmammon.familyphoto.utils.HorizontalListView;
 import com.hmammon.familyphoto.utils.ImageHelper;
 import com.hmammon.familyphoto.utils.ImageManager;
@@ -44,7 +45,7 @@ public class MainActivity extends BaseActivity {
     private ArrayList<Photo> photos;
     private ImageLoader loader;
     private boolean isOpen = true, isFirst;
-    private Button btnWifi;
+    private Button btnWifi, btnRefresh;
     private ImageManager manager;
     private FragmentManager fragMana;
     private FrameLayout topbar;
@@ -56,12 +57,15 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        BaseApp.getInstance().activity = this;
+
         fragMana = getFragmentManager();
 
         list = (HorizontalListView) findViewById(R.id.listView);
         iv = (ImageView)findViewById(R.id.imageView);
         loader = ImageLoader.getInstance();
         btnWifi = (Button)findViewById(R.id.btn_wifi);
+        btnRefresh = (Button)findViewById(R.id.btn_refresh);
         topbar = (FrameLayout) findViewById(R.id.topbar);
 
         fragNopic = new NopicFragment();
@@ -78,7 +82,7 @@ public class MainActivity extends BaseActivity {
 
         iv.setOnClickListener(clickListener);
         btnWifi.setOnClickListener(clickListener);
-
+        btnRefresh.setOnClickListener(clickListener);
 
         if (photos.size() > 0)
             loader.displayImage("file://" + photos.get(0).path, iv, ImageHelper.options);
@@ -121,6 +125,9 @@ public class MainActivity extends BaseActivity {
                FragmentTransaction ft = fragMana.beginTransaction();
                ft.add(R.id.container, fragWifi);
                ft.commit();
+           }
+           else if (view == btnRefresh){
+               BaseApp.getInstance().service.startManual();
            }
         }
     };
@@ -190,6 +197,10 @@ public class MainActivity extends BaseActivity {
             if (intent.getAction() == FileService.REFRESH){
                 refreshDb();
                 adapter.notifyDataSetChanged();
+            }
+
+            if (intent.getAction() == FileService.START_DOWN){
+
             }
         }
 
@@ -292,4 +303,10 @@ public class MainActivity extends BaseActivity {
                 + " - " + tmp2.getMeasuredWidth() + " - " + tmp2.getMeasuredWidth());
 */
     }
+
+    public void setDownloading(boolean isDown){
+        Log.i("设置可用性", isDown+"");
+        btnRefresh.setEnabled(!isDown);
+    }
+
 }

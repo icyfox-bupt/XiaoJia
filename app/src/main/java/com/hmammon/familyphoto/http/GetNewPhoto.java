@@ -26,7 +26,6 @@ public class GetNewPhoto {
     public String guid, uid;
 
     public void start() {
-
         RequestParams rp = new RequestParams();
         rp.add("deviceId", BaseApp.getDeviceId());
 
@@ -41,7 +40,11 @@ public class GetNewPhoto {
 //            Log.i("tag", response.toString());
 
             JSONObject json = response.optJSONObject("data");
-            if (json == null) return;
+            if (json == null) {
+                BaseApp.getInstance().activity.setDownloading(false);
+                BaseApp.getInstance().service.isDownloading = false;
+                return;
+            }
 
             String locktime = json.optString("locktime");
             String starttime = json.optString("starttime");
@@ -61,6 +64,7 @@ public class GetNewPhoto {
         @Override
         public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
             super.onFailure(statusCode, headers, throwable, errorResponse);
+            Log.e("http", statusCode + "");
         }
     };
 
@@ -69,6 +73,8 @@ public class GetNewPhoto {
      *
      */
     private void downPack(JSONArray downloads) {
+        Log.i("down", downloads + " \n" +  imageIndex);
+
         if (downloads != null && imageIndex < downloads.length()) {
             JSONObject image = downloads.optJSONObject(imageIndex);
 
@@ -87,6 +93,10 @@ public class GetNewPhoto {
 
                 HttpHelper.get(url, handler);
             }
+        }else{
+            //没得下了
+            BaseApp.getInstance().activity.setDownloading(false);
+            BaseApp.getInstance().service.isDownloading = false;
         }
     }
 

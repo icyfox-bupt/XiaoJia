@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.hmammon.familyphoto.FileService;
 import com.hmammon.familyphoto.http.HttpHelper;
+import com.hmammon.familyphoto.ui.MainActivity;
 import com.hmammon.familyphoto.utils.ImageHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -24,6 +25,8 @@ import java.util.Locale;
 public class BaseApp extends Application {
 
     private static BaseApp app = null;
+    public FileService service;
+    public MainActivity activity;
 
     @Override
     public void onCreate() {
