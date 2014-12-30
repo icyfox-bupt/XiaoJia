@@ -66,7 +66,8 @@ public class PhotoDbHelper extends SQLiteOpenHelper {
 
         String[] projection = {
                 PhotoContract.COLUMN_NAME_PHOTO_PATH,
-                PhotoContract.COLUMN_NAME_PHOTO_THUMB
+                PhotoContract.COLUMN_NAME_PHOTO_THUMB,
+                PhotoContract.COLUMN_NAME_PHOTO_TIME
         };
 
         String sortOrder = PhotoContract.COLUMN_NAME_PHOTO_TIME + " DESC";
@@ -89,6 +90,7 @@ public class PhotoDbHelper extends SQLiteOpenHelper {
             Photo p = new Photo();
             p.path = c.getString(0);
             p.thumb = c.getString(1);
+            p.savetime = c.getLong(2);
             photos.add(p);
         }
 

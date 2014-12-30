@@ -41,7 +41,7 @@ public class MainActivity extends BaseActivity {
     private SQLiteDatabase db;
     private HorizontalListView list;
     private PhotoAdapter adapter;
-    private ImageView iv;
+    private ImageView iv, ivNew;
     private ArrayList<Photo> photos;
     private ImageLoader loader;
     private boolean isOpen = true, isFirst;
@@ -67,6 +67,7 @@ public class MainActivity extends BaseActivity {
         btnWifi = (Button)findViewById(R.id.btn_wifi);
         btnRefresh = (Button)findViewById(R.id.btn_refresh);
         topbar = (FrameLayout) findViewById(R.id.topbar);
+        ivNew = (ImageView) findViewById(R.id.iv_new);
 
         fragNopic = new NopicFragment();
         fragSMS = new SMSFragment();
@@ -307,6 +308,27 @@ public class MainActivity extends BaseActivity {
     public void setDownloading(boolean isDown){
         Log.i("设置可用性", isDown+"");
         btnRefresh.setEnabled(!isDown);
+    }
+
+    /**
+     * 检查照片是不是最近24小时下载的
+     * @param photo
+     * @return
+     */
+    private boolean isNew(Photo photo){
+        long now = System.currentTimeMillis();
+        long aDay = 1000L * 24 * 60 * 60;
+        return now - photo.savetime <= aDay;
+    }
+
+    /**
+     * 设置是否显示New！
+     * @param photo
+     */
+    public void setNew(Photo photo){
+        if (isNew(photo))
+            ivNew.setVisibility(View.VISIBLE);
+        else ivNew.setVisibility(View.GONE);
     }
 
 }
