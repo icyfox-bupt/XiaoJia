@@ -3,6 +3,7 @@ package com.hmammon.familyphoto.utils;
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.hmammon.familyphoto.Photo;
@@ -33,9 +34,9 @@ public class ImageManager {
     }
 
     public void next(){
-        int index = current + 1;
-        if (index > photos.size() - 1) index = 0;
-        display(index);
+        current++;
+        if (current > photos.size() - 1) current = 0;
+        display(current);
     }
 
     public void previous(){
@@ -43,6 +44,7 @@ public class ImageManager {
     }
 
     public void start(){
+        if (isRun) return;
         isRun = true;
         timer = new Timer();
         timer.start();
@@ -80,9 +82,11 @@ public class ImageManager {
             while (isRun){
                 try {
                     Thread.sleep(duration);
-                } catch (InterruptedException ignore) {}
-
-                handler.sendEmptyMessage(1);
+                } catch (InterruptedException ignore) {
+                    ignore.printStackTrace();
+                }
+                if (isRun)
+                    handler.sendEmptyMessage(1);
             }
         }
     };

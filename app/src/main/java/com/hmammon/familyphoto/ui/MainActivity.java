@@ -177,13 +177,13 @@ public class MainActivity extends BaseActivity {
             list.animate().y(y);
             topbar.animate().y(0 - barHeight);
             isOpen = false;
-            manager.pause();
+            manager.start();
         }else{
             float y = wHeight - lHeight;
             list.animate().y(y);
             topbar.animate().y(0);
             isOpen = true;
-            manager.start();
+            manager.pause();
         }
     }
 
