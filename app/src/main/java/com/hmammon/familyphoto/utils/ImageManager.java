@@ -98,6 +98,8 @@ public class ImageManager {
     private void display(int index){
         loader.displayImage("file://" + photos.get(index).path, imageView);
         activity.setNew(photos.get(index));
+        activity.list.setSelection(index);
+        activity.list.scrollTo(index * 100 - 450);
     }
 
     public void setPhotos(List<Photo> photos) {

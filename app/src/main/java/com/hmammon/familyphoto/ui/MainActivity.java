@@ -39,7 +39,7 @@ import java.util.ArrayList;
 public class MainActivity extends BaseActivity {
 
     private SQLiteDatabase db;
-    private HorizontalListView list;
+    public HorizontalListView list;
     private PhotoAdapter adapter;
     private ImageView iv, ivNew;
     private ArrayList<Photo> photos;
