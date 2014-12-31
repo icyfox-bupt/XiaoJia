@@ -105,8 +105,11 @@ public class MainActivity extends BaseActivity {
 
         if (photos.size() > 0)
             loader.displayImage("file://" + photos.get(0).path, iv, ImageHelper.options);
-        else
+        else {
             iv.setImageResource(R.drawable.bg_nopic);
+            ivLeft.setVisibility(View.GONE);
+            ivRight.setVisibility(View.GONE);
+        }
     }
 
     private AdapterView.OnItemClickListener itListener = new AdapterView.OnItemClickListener() {
