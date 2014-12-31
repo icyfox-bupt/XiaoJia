@@ -41,7 +41,7 @@ public class GetNewPhoto {
 
             JSONObject json = response.optJSONObject("data");
             if (json == null) {
-                BaseApp.getInstance().activity.setDownloading(false);
+                BaseApp.getInstance().activity.setDownloading(false, 0);
                 BaseApp.getInstance().service.isDownloading = false;
                 return;
             }
@@ -89,13 +89,13 @@ public class GetNewPhoto {
                 String filename = guid + "_" + i + ".jpg";
 
                 File file = new File(HttpHelper.SAVEPATH, filename);
-                MyFileHandler handler = new MyFileHandler(file, this);
+                MyFileHandler handler = new MyFileHandler(file, url, this);
 
                 HttpHelper.get(url, handler);
             }
         }else{
             //没得下了
-            BaseApp.getInstance().activity.setDownloading(false);
+            BaseApp.getInstance().activity.setDownloading(false, 1);
             BaseApp.getInstance().service.isDownloading = false;
         }
     }

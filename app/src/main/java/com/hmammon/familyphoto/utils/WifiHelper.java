@@ -18,7 +18,7 @@ public class WifiHelper {
             case CONNECTED :
                 return "已连接";
             case DISCONNECTED :
-                return "连接已断开";
+                return "请等待";
             case DISCONNECTING :
                 return "连接断开中";
             case FAILED :

@@ -58,10 +58,11 @@ public class FileService extends Service {
     public void startDownload() {
         long now = System.currentTimeMillis();
         long last = sp.getLong(LASTTIME, 0L);
-        if (now - last < 6000 * 1000L) return;
+        if (now - last < 7200 * 1000L) return;
         else {
             isDownloading = true;
-            BaseApp.getInstance().activity.setDownloading(true);
+            BaseApp.getInstance().activity.setDownloading(true, 0);
+            BaseApp.getInstance().activity.manual = false;
             Log.i("down", "开始下载啦！" + now + " " + last);
             sp.edit().putLong(LASTTIME, now).commit();
             new GetNewPhoto().start();
@@ -76,7 +77,8 @@ public class FileService extends Service {
         long now = System.currentTimeMillis();
 
         isDownloading = true;
-        BaseApp.getInstance().activity.setDownloading(true);
+        BaseApp.getInstance().activity.setDownloading(true, 0);
+        BaseApp.getInstance().activity.manual = true;
         Log.i("down", "开始下载啦！" + now);
         sp.edit().putLong(LASTTIME, now).commit();
         new GetNewPhoto().start();

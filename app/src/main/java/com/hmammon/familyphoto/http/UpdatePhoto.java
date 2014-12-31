@@ -1,5 +1,7 @@
 package com.hmammon.familyphoto.http;
 
+import android.util.Log;
+
 import com.hmammon.familyphoto.utils.BaseApp;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -40,7 +42,7 @@ public class UpdatePhoto {
         }
         else{
             JSONArray arr = new JSONArray();
-            arr.put("guid");
+            arr.put(guid);
             update = arr.toString();
             rp.add("deleted", update);
         }

@@ -1,5 +1,6 @@
 package com.hmammon.familyphoto.ui;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -56,6 +57,8 @@ public class MainActivity extends BaseActivity {
     public Fragment fragWifi, fragNopic, fragSMS;
     private int bigItem = 0;
     private CountThread cThread;
+    private AlertDialog tipDialog;
+    public boolean manual = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +73,7 @@ public class MainActivity extends BaseActivity {
         UmengUpdateAgent.setUpdateCheckConfig(false);
         UmengUpdateAgent.update(this);
         MobclickAgent.updateOnlineConfig(this);
+
     }
 
     private void initView() {
@@ -107,8 +111,6 @@ public class MainActivity extends BaseActivity {
             loader.displayImage("file://" + photos.get(0).path, iv, ImageHelper.options);
         else {
             iv.setImageResource(R.drawable.bg_nopic);
-            ivLeft.setVisibility(View.GONE);
-            ivRight.setVisibility(View.GONE);
         }
     }
 
@@ -165,8 +167,15 @@ public class MainActivity extends BaseActivity {
         PhotoDbHelper mHelper = new PhotoDbHelper(this);
         photos = mHelper.getPhotoInDb(photos);
 
-        if (photos.size() == 0)
+        if (photos.size() == 0) {
             fragMana.beginTransaction().add(R.id.container, fragNopic).commit();
+            ivLeft.setVisibility(View.GONE);
+            ivRight.setVisibility(View.GONE);
+        }else{
+            if (!isOpen) manager.next();
+            ivLeft.setVisibility(View.VISIBLE);
+            ivRight.setVisibility(View.VISIBLE);
+        }
 
         manager.setPhotos(photos);
     }
@@ -267,6 +276,7 @@ public class MainActivity extends BaseActivity {
         case KeyEvent.KEYCODE_DPAD_UP:
         case KeyEvent.KEYCODE_DPAD_LEFT:
         case KeyEvent.KEYCODE_DPAD_RIGHT:
+        case KeyEvent.KEYCODE_DPAD_CENTER:
         case KeyEvent.KEYCODE_BACK: {
             return true;
         }
@@ -345,9 +355,20 @@ public class MainActivity extends BaseActivity {
 */
     }
 
-    public void setDownloading(boolean isDown){
+    public void setDownloading(boolean isDown, int type){
         Log.i("设置可用性", isDown+"");
         btnRefresh.setEnabled(!isDown);
+        if (tipDialog == null)
+        tipDialog = new AlertDialog.Builder(this)
+                .setTitle("更新照片")
+                .setMessage("更新完毕")
+                .setPositiveButton("确定", null)
+                .create();
+
+        if (type == 0) tipDialog.setMessage("暂无可更新照片");
+
+        if (!tipDialog.isShowing() && !isDown && manual)
+            tipDialog.show();
     }
 
     /**
@@ -357,7 +378,7 @@ public class MainActivity extends BaseActivity {
      */
     private boolean isNew(Photo photo){
         long now = System.currentTimeMillis();
-        long aDay = 1000L * 24 * 60 * 60;
+        long aDay = 1000L * 24 * 60;
         return now - photo.savetime <= aDay;
     }
 
@@ -375,7 +396,7 @@ public class MainActivity extends BaseActivity {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what == 0)
+            if (msg.what == 0 && isOpen)
                 toggle();
         }
     };

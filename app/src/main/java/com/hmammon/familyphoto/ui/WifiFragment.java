@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -14,6 +15,8 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,12 +61,14 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
     private ProgressDialog dialog;
     private InputMethodManager imm;
     private String nowConn;
+    private WifiFragment frag;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = (MainActivity) getActivity();
         fragName = "WifiSetting";
+        frag = this;
 
         wifiReceiver = new WifiReceiver();
 
@@ -71,6 +76,7 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
         if (!wifiMana.isWifiEnabled())
             wifiMana.setWifiEnabled(true);
 
+        nowConn = wifiMana.getConnectionInfo().getSSID();
         dialog = new ProgressDialog(activity);
     }
 
@@ -102,6 +108,7 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
     @Override
     public void onResume() {
         super.onResume();
+        wifiMana.startScan();
     }
 
     @Override
@@ -109,11 +116,13 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
         super.onPause();
         try {
             activity.unregisterReceiver(wifiReceiver);
+            adapter = null;
         }catch (Exception ignore){}
     }
 
     @Override
     public void onClick(View view) {
+
         if (view == btnConnect){
             llDetail.setVisibility(View.VISIBLE);
             btnConnect.setVisibility(View.GONE);
@@ -125,7 +134,7 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
             intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
             activity.registerReceiver(wifiReceiver, intentFilter);
             wifiMana.startScan();
-
+            Log.i("wifi", "start scan");
             SPHelper.setFirst();
             hideKeyBoard();
         }
@@ -138,11 +147,12 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
         else if (view == btnConn){
             String pass = etPass.getText().toString();
             if (pass.length() == 0) {
-                showToast("请输入密码");
+                showDialog("输入错误", "请输入密码", null);
                 return;
             }
             connect(choose, pass);
             dialog.show();
+            new ConThread().start();
             hideKeyBoard();
         }
     }
@@ -233,6 +243,7 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
 
             //Wifi列表可用消息
             if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)){
+
                 list();
             }
             //网络状态改变消息
@@ -241,11 +252,21 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
                 if (info != null){
                     dialog.setMessage(WifiHelper.getInfo(info.getDetailedState()));
                     Log.i("wifi", info.getDetailedState()+"");
-                    nowConn = info.getExtraInfo();
                     if (info.isConnected()) {
-                        showToast(info.getDetailedState());
+
+                        if (!nowConn.equals(info.getExtraInfo()))
+
+                        showDialog("网络连接", "网络成功连接到" + info.getExtraInfo(),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        getActivity().getFragmentManager().beginTransaction().remove(frag).commit();
+                                        if (!SPHelper.isSend()) startSMS();
+                                    }
+                                });
+
                         dialog.dismiss();
-//                        if (!SPHelper.isSend()) startSMS();
+                        nowConn = info.getExtraInfo();
                     }
                 }
             }
@@ -301,10 +322,16 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
             conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
         }
 
+        //删除所有保存的网络
+        List<WifiConfiguration> list = wifiMana.getConfiguredNetworks();
+        for( WifiConfiguration i : list ){
+            wifiMana.removeNetwork(i.networkId);
+        }
+
         wifiMana.addNetwork(conf);
 
-        List<WifiConfiguration> list = wifiMana.getConfiguredNetworks();
-        for( WifiConfiguration i : list ) {
+        List<WifiConfiguration> listnew = wifiMana.getConfiguredNetworks();
+        for( WifiConfiguration i : listnew ) {
             if(i.SSID != null && i.SSID.equals("\"" + result.SSID + "\"")) {
                 wifiMana.disconnect();
                 wifiMana.enableNetwork(i.networkId, true);
@@ -336,5 +363,31 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
         super.onActivityCreated(savedInstanceState);
         imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
     }
+
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            dialog.dismiss();
+            showDialog("网络连接", "无法连接到网络，请检查密码或路由器", null);
+        }
+    };
+
+    class ConThread extends Thread{
+        @Override
+        public void run() {
+            super.run();
+
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            if (dialog.isShowing()){
+                handler.sendEmptyMessage(0);
+            }
+        }
+    };
 
 }

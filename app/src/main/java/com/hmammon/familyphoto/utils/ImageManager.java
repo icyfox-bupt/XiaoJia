@@ -57,7 +57,10 @@ public class ImageManager {
 
     public void pause(){
         isRun = false;
-        timer = null;
+        if (timer != null) {
+            timer.exit();
+            timer = null;
+        }
     }
 
     public void show(int index){
@@ -83,6 +86,8 @@ public class ImageManager {
 
     class Timer extends Thread{
 
+        boolean exit = false;
+
         @Override
         public void run() {
             super.run();
@@ -92,9 +97,16 @@ public class ImageManager {
                 } catch (InterruptedException ignore) {
                     ignore.printStackTrace();
                 }
+                if (exit) break;
+
                 if (isRun)
                     handler.sendEmptyMessage(1);
+
             }
+        }
+
+        public void exit(){
+            exit = true;
         }
     };
 

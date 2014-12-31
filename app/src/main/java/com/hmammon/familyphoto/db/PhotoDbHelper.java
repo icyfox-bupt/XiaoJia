@@ -104,11 +104,14 @@ public class PhotoDbHelper extends SQLiteOpenHelper {
      * 根据guid删除数据库中照片
      * @param delGuid
      */
-    public int delInDb(String delGuid) {
+    public int delInDb(String delGuid, String url) {
         SQLiteDatabase db = getWritableDatabase();
-        String[] args = {delGuid};
-        int num =  db.delete(PhotoContract.TABLE_NAME, PhotoContract.COLUMN_NAME_PHOTO_GUID + "=?", args);
+        String[] args = {delGuid, url};
+        int num =  db.delete(PhotoContract.TABLE_NAME, PhotoContract.COLUMN_NAME_PHOTO_GUID + "=? AND "
+                + PhotoContract.COLUMN_NAME_PHOTO_URL + "=?", args);
         db.close();
+        Log.i("delete", PhotoContract.COLUMN_NAME_PHOTO_GUID + "=? AND "
+                + PhotoContract.COLUMN_NAME_PHOTO_URL + "=?"+ "\n" + num+"");
         return num;
     }
 
@@ -116,7 +119,7 @@ public class PhotoDbHelper extends SQLiteOpenHelper {
      * 通过GUID获得照片信息
      * @return
      */
-    public ArrayList<Photo> getPhotoByGuid(String guid){
+    public ArrayList<Photo> getPhotoByGuidUrl(String guid, String url){
         SQLiteDatabase db = getWritableDatabase();
 
         String[] projection = {
@@ -125,8 +128,11 @@ public class PhotoDbHelper extends SQLiteOpenHelper {
         };
 
         String sortOrder = PhotoContract.COLUMN_NAME_PHOTO_TIME + " DESC";
-        String whereClause = PhotoContract.COLUMN_NAME_PHOTO_GUID + "=?";
-        String [] whereArgs = {guid};
+        String whereClause = PhotoContract.COLUMN_NAME_PHOTO_GUID + "=? AND "
+                + PhotoContract.COLUMN_NAME_PHOTO_URL + "=?";
+        String [] whereArgs = {guid, url};
+
+        Log.i("db", whereClause + "\n" + whereArgs[0] + " " + whereArgs[1]);
 
         Cursor c = db.query(
                 PhotoContract.TABLE_NAME,

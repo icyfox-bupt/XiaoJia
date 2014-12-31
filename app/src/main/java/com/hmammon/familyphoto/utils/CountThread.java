@@ -27,7 +27,6 @@ public class CountThread extends Thread {
                 e.printStackTrace();
             }
             count--;
-            Log.i("th", "count " + count);
             if (msg != 0) break;
         }
             //do toggle

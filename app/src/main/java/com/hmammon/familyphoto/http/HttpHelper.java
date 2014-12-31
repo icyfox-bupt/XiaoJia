@@ -12,7 +12,7 @@ import com.loopj.android.http.RequestParams;
  */
 public class HttpHelper {
 
-    private static final String BASEURL = "http://203.195.217.220:442/";
+    private static final String BASEURL = "http://picfamily.hmammon.cn/";
     public static final String SYNC = BASEURL + "device/syncdevicecontent";
     public static final String INVITE = BASEURL + "device/invite";
     public static final String UPDATE = BASEURL + "device/updatedevicecontent";

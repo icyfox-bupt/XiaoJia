@@ -13,6 +13,7 @@ import org.json.JSONArray;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by icyfox on 2014/12/30.
@@ -34,14 +35,21 @@ public class DeletePhoto {
         if (deletes == null || deletes.length() == 0) return;
 
         for (int i = 0; i < deletes.length(); i++) {
-            String delGuid = deletes.optString(i);
-            ArrayList<Photo> photos = dbhelper.getPhotoByGuid(delGuid);
-            delPhotos(photos);
+            String delGuid = deletes.optJSONObject(i).optString("guid");
+            JSONArray arr = deletes.optJSONObject(i).optJSONArray("url");
 
-            int delNum = dbhelper.delInDb(delGuid);
-            Log.i("del", delNum + "photos have been deleted " + delGuid);
+
+            for (int j = 0; j < arr.length(); j++){
+                String url = arr.optString(j);
+                ArrayList<Photo> photos = dbhelper.getPhotoByGuidUrl(delGuid, url);
+                dbhelper.delInDb(delGuid, url);
+                delPhotos(photos);
+            }
+
+
+            Log.i("del", arr.length() + "photos have been deleted " + delGuid);
             UpdatePhoto up = new UpdatePhoto(delGuid, UpdatePhoto.TYPE_DELETE);
-            if (delNum > 0) up.start();
+            if (arr.length() > 0) up.start();
         }
 
         //发送更新数据请求
@@ -58,6 +66,11 @@ public class DeletePhoto {
             File t = new File(photo.thumb);
             t.delete();
         }
+    }
+
+    private class Gpack{
+        String guid = "";
+        ArrayList<String> urls = new ArrayList<>();
     }
 
 }

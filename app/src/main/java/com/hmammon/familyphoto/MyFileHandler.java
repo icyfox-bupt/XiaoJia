@@ -36,12 +36,14 @@ public class MyFileHandler extends FileAsyncHttpResponseHandler {
     private final SQLiteDatabase db;
     private String fileName;
     private GetNewPhoto gnp;
+    private String url;
 
-    public MyFileHandler(File file, GetNewPhoto gnp) {
+    public MyFileHandler(File file, String url, GetNewPhoto gnp) {
         super(file);
         PhotoDbHelper dbhelper = new PhotoDbHelper(BaseApp.getInstance());
         db = dbhelper.getWritableDatabase();
         this.gnp = gnp;
+        this.url = url;
     }
 
     public void setFileName(String name){
@@ -81,6 +83,7 @@ public class MyFileHandler extends FileAsyncHttpResponseHandler {
         cv.put(PhotoContract.COLUMN_NAME_PHOTO_NAME, "");
         cv.put(PhotoContract.COLUMN_NAME_PHOTO_DESCRIPTION, "");
         cv.put(PhotoContract.COLUMN_NAME_PHOTO_THUMB, thumb);
+        cv.put(PhotoContract.COLUMN_NAME_PHOTO_URL, url);
         db.insert(PhotoContract.TABLE_NAME,null, cv);
     }
 
