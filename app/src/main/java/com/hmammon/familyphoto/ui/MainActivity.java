@@ -10,6 +10,8 @@ import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -25,6 +27,7 @@ import com.hmammon.familyphoto.R;
 import com.hmammon.familyphoto.db.PhotoDbHelper;
 import com.hmammon.familyphoto.utils.BaseActivity;
 import com.hmammon.familyphoto.utils.BaseApp;
+import com.hmammon.familyphoto.utils.CountThread;
 import com.hmammon.familyphoto.utils.HorizontalListView;
 import com.hmammon.familyphoto.utils.ImageHelper;
 import com.hmammon.familyphoto.utils.ImageManager;
@@ -51,6 +54,7 @@ public class MainActivity extends BaseActivity {
     private FrameLayout topbar;
     public Fragment fragWifi, fragNopic, fragSMS;
     private int bigItem = 0;
+    private CountThread cThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +107,7 @@ public class MainActivity extends BaseActivity {
             if (bigItem == position) return;
             manager.show(position);
             lightView(position);
+            cThread.reset();
         }
     };
 
@@ -112,6 +117,7 @@ public class MainActivity extends BaseActivity {
             if (bigItem == i) return false;
             manager.show(i);
             lightView(i);
+            cThread.reset();
             return false;
         }
     };
@@ -168,6 +174,11 @@ public class MainActivity extends BaseActivity {
             topbar.animate().y(0);
             isOpen = true;
             manager.pause();
+
+            if (cThread != null)
+                cThread.exit();
+            cThread = new CountThread(countHandler);
+            cThread.start();
         }
     }
 
@@ -330,5 +341,14 @@ public class MainActivity extends BaseActivity {
             ivNew.setVisibility(View.VISIBLE);
         else ivNew.setVisibility(View.GONE);
     }
+
+    private Handler countHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 0)
+                toggle();
+        }
+    };
 
 }
