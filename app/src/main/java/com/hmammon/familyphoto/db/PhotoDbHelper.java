@@ -31,7 +31,7 @@ public class PhotoDbHelper extends SQLiteOpenHelper {
                         PhotoContract.COLUMN_NAME_PHOTO_GUID + TEXT_TYPE + COMMA_SEP +
                         PhotoContract.COLUMN_NAME_PHOTO_UID + TEXT_TYPE + COMMA_SEP +
                         PhotoContract.COLUMN_NAME_PHOTO_THUMB + TEXT_TYPE + COMMA_SEP +
-                        PhotoContract.COLUMN_NAME_PHOTO_THUMB + TEXT_TYPE + COMMA_SEP +
+                        PhotoContract.COLUMN_NAME_PHOTO_URL + TEXT_TYPE + COMMA_SEP +
                         PhotoContract.COLUMN_NAME_PHOTO_NAME + TEXT_TYPE + COMMA_SEP +
                         PhotoContract.COLUMN_NAME_PHOTO_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
                         PhotoContract.COLUMN_NAME_PHOTO_LIKE + SHORT_TYPE + COMMA_SEP +

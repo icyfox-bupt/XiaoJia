@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 
 import com.hmammon.familyphoto.R;
 import com.hmammon.familyphoto.utils.BaseFragment;
+import com.hmammon.familyphoto.utils.SPHelper;
 import com.hmammon.familyphoto.utils.WifiComparator;
 import com.hmammon.familyphoto.utils.WifiHelper;
 
@@ -55,6 +57,7 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
     private ScanResult choose;
     private ProgressDialog dialog;
     private InputMethodManager imm;
+    private String nowConn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,6 +91,11 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
         lv = (ListView) view.findViewById(R.id.lv);
         lv.setOnItemClickListener(this);
         tvWifi = (TextView) view.findViewById(R.id.tv_wifi);
+        if (!SPHelper.isFirst())
+            btnConnect.performClick();
+        else
+            btnExit.setVisibility(View.GONE);
+
         return view;
     }
 
@@ -118,6 +126,7 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
             activity.registerReceiver(wifiReceiver, intentFilter);
             wifiMana.startScan();
 
+            SPHelper.setFirst();
             hideKeyBoard();
         }
 
@@ -195,6 +204,16 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
 
             tvName = (TextView) view.findViewById(R.id.tv_name);
             tvName.setText(wifiScanList.get(i).SSID);
+
+            Log.i("wifi", nowConn + "   " + wifiScanList.get(i).SSID);
+
+            if (nowConn.equals(("\""+wifiScanList.get(i).SSID) + "\"")){
+                tvName.append("(正在连接)");
+                tvName.setTextColor(getResources().getColor(R.color.orange));
+            }
+            else
+                tvName.setTextColor(Color.WHITE);
+
             ivPass = (ImageView) view.findViewById(R.id.iv_pass);
 
             boolean lock = getSecurity(wifiScanList.get(i)) == SECURITY_NONE;
@@ -222,10 +241,11 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
                 if (info != null){
                     dialog.setMessage(WifiHelper.getInfo(info.getDetailedState()));
                     Log.i("wifi", info.getDetailedState()+"");
+                    nowConn = info.getExtraInfo();
                     if (info.isConnected()) {
                         showToast(info.getDetailedState());
                         dialog.dismiss();
-                        startSMS();
+//                        if (!SPHelper.isSend()) startSMS();
                     }
                 }
             }
@@ -306,6 +326,7 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
      * 隐藏软键盘
      */
     void hideKeyBoard(){
+        if (imm == null) return;
         imm.hideSoftInputFromWindow(etPass.getWindowToken(), 0);
     }
 

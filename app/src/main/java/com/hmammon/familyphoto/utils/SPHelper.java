@@ -35,4 +35,20 @@ public class SPHelper {
     public static long getSMSTime(){
         return sp.getLong("smstime", 0L);
     }
+
+    public static void setFirst(){
+        editor.putBoolean("first", false).commit();
+    }
+
+    public static boolean isFirst(){
+        return sp.getBoolean("first", true);
+    }
+
+    public static void setSend(){
+        editor.putBoolean("sended", true).commit();
+    }
+
+    public static boolean isSend(){
+        return sp.getBoolean("sended", false);
+    }
 }

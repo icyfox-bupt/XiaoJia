@@ -31,6 +31,7 @@ import com.hmammon.familyphoto.utils.CountThread;
 import com.hmammon.familyphoto.utils.HorizontalListView;
 import com.hmammon.familyphoto.utils.ImageHelper;
 import com.hmammon.familyphoto.utils.ImageManager;
+import com.hmammon.familyphoto.utils.SPHelper;
 import com.hmammon.familyphoto.utils.Tools;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
@@ -248,6 +249,10 @@ public class MainActivity extends BaseActivity {
             btnWifi.setBackgroundResource(R.drawable.selector_btn_wifi_con);
         }else{
             btnWifi.setBackgroundResource(R.drawable.selector_btn_wifi_nocon);
+        }
+
+        if(SPHelper.isFirst()){
+            btnWifi.performClick();
         }
     }
 

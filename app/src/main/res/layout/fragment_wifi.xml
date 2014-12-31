@@ -10,6 +10,7 @@
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_gravity="center"
+        android:visibility="gone"
         android:background="@drawable/selector_wifi_cir"
         />
 
@@ -19,7 +20,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_margin="20dp"
-        android:visibility="gone"
+        android:visibility="visible"
         android:orientation="vertical">
 
         <TextView
@@ -49,21 +50,21 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="48dp">
 
 
             <EditText
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
+                android:layout_width="300dp"
+                android:layout_height="48dp"
                 android:hint="@string/passtip"
-                android:textColorHint="@color/white"
-                android:textColor="@color/white"
+                android:background="@drawable/bg_et"
+                android:layout_marginRight="20dp"
+                android:paddingLeft="10dp"
                 android:id="@+id/et" />
 
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="48dp"
                 android:text="@string/connect"
                 android:background="@drawable/selector_btn"
                 android:textColor="@color/white"

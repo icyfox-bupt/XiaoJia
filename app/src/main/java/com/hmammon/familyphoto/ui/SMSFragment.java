@@ -34,7 +34,7 @@ public class SMSFragment extends BaseFragment implements View.OnClickListener{
     private Button btnSend, btnSkip;
     private EditText etPhone;
     private View base;
-    private final long TIME = 1000L * 10 * 60;
+    private final long TIME = 1000L * 5;
     InputMethodManager imm;
 
     @Override
@@ -116,6 +116,7 @@ public class SMSFragment extends BaseFragment implements View.OnClickListener{
                 public void onClick(DialogInterface dialogInterface, int i) {
                     btnSkip.performClick();
                     SPHelper.setSMSTime();
+                    SPHelper.setSend();
                 }
             });
         }
