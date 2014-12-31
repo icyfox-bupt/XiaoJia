@@ -48,10 +48,10 @@ public class ImageHelper {
             .threadPriority(Thread.NORM_PRIORITY - 2) // default
             .tasksProcessingOrder(QueueProcessingType.FIFO) // default
             .denyCacheImageMultipleSizesInMemory()
-            .memoryCache(new LruMemoryCache(50 * 1024 * 1024))
+//            .memoryCache(new LruMemoryCache(50 * 1024 * 1024))
             .memoryCacheSize(50 * 1024 * 1024)
             .memoryCacheSizePercentage(80) // default
-            .diskCache(new UnlimitedDiscCache(cacheDir)) // default
+//            .diskCache(new UnlimitedDiscCache(cacheDir)) // default
             .diskCacheSize(50 * 1024 * 1024)
             .diskCacheFileCount(100)
             .diskCacheFileNameGenerator(new HashCodeFileNameGenerator()) // default

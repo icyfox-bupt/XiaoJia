@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class PhotoDbHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "Photo.db";
 
         //SQL语句
@@ -31,6 +31,7 @@ public class PhotoDbHelper extends SQLiteOpenHelper {
                         PhotoContract.COLUMN_NAME_PHOTO_GUID + TEXT_TYPE + COMMA_SEP +
                         PhotoContract.COLUMN_NAME_PHOTO_UID + TEXT_TYPE + COMMA_SEP +
                         PhotoContract.COLUMN_NAME_PHOTO_THUMB + TEXT_TYPE + COMMA_SEP +
+                        PhotoContract.COLUMN_NAME_PHOTO_THUMB + TEXT_TYPE + COMMA_SEP +
                         PhotoContract.COLUMN_NAME_PHOTO_NAME + TEXT_TYPE + COMMA_SEP +
                         PhotoContract.COLUMN_NAME_PHOTO_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
                         PhotoContract.COLUMN_NAME_PHOTO_LIKE + SHORT_TYPE + COMMA_SEP +
@@ -38,8 +39,8 @@ public class PhotoDbHelper extends SQLiteOpenHelper {
                         PhotoContract.COLUMN_NAME_PHOTO_TIME + LONG_TYPE +
                         ")";
 
-        private static final String SQL_ADD_THUMBS =
-                "ALTER TABLE " + PhotoContract.TABLE_NAME + " ADD thumb TEXT DEFAULT ''";
+        private static final String SQL_ADD_URL =
+                "ALTER TABLE " + PhotoContract.TABLE_NAME + " ADD url TEXT DEFAULT ''";
 
         public PhotoDbHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -53,7 +54,7 @@ public class PhotoDbHelper extends SQLiteOpenHelper {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
         Log.i("db","update");
-//        db.execSQL(SQL_ADD_THUMBS);
+        db.execSQL(SQL_ADD_URL);
         onCreate(db);
     }
 

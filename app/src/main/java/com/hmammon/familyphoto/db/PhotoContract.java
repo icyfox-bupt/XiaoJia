@@ -13,6 +13,7 @@ public class PhotoContract {
     public static final String COLUMN_NAME_PHOTO_GUID = "guid";
     public static final String COLUMN_NAME_PHOTO_UID = "uid";
     public static final String COLUMN_NAME_PHOTO_THUMB = "thumb";
+    public static final String COLUMN_NAME_PHOTO_URL = "url";
     public static final String COLUMN_NAME_PHOTO_NAME = "name";
     public static final String COLUMN_NAME_PHOTO_DESCRIPTION = "description";
     public static final String COLUMN_NAME_PHOTO_TIME = "time";

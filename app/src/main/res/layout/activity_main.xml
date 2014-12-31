@@ -34,9 +34,31 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/topbar"
-        android:layout_margin="20dp"
+        android:layout_marginTop="20dp"
         android:src="@drawable/ic_new"
         android:id="@+id/iv_new" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/selector_ic_left"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:paddingTop="30dp"
+        android:paddingBottom="30dp"
+        android:paddingRight="30dp"
+        android:id="@+id/iv_left" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/selector_ic_right"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:paddingTop="30dp"
+        android:paddingBottom="30dp"
+        android:paddingLeft="30dp"
+        android:id="@+id/iv_right" />
 
     <FrameLayout
         android:id="@+id/topbar"

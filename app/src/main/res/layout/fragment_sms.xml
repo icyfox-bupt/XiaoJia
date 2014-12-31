@@ -19,20 +19,21 @@
 
             <EditText
                 android:id="@+id/et_phone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="11"
+                android:layout_width="300dp"
+                android:layout_height="48dp"
                 android:maxLength="11"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white"
+                android:paddingLeft="10dp"
+                android:textColor="@color/black"
                 android:textSize="20sp"
+                android:background="@drawable/bg_et"
                 android:hint="@string/phonetip"
+                android:layout_marginRight="20dp"
                 android:inputType="phone" />
 
             <Button
                 android:id="@+id/btn_send"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="48dp"
                 android:background="@drawable/selector_btn"
                 android:textColor="@color/white"
                 android:text="@string/confirm" />

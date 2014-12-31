@@ -44,7 +44,7 @@ public class MainActivity extends BaseActivity {
     private SQLiteDatabase db;
     public HorizontalListView list;
     private PhotoAdapter adapter;
-    private ImageView iv, ivNew;
+    private ImageView iv, ivNew, ivLeft, ivRight;
     private ArrayList<Photo> photos;
     private ImageLoader loader;
     private boolean isOpen = true, isFirst;
@@ -63,6 +63,15 @@ public class MainActivity extends BaseActivity {
 
         BaseApp.getInstance().activity = this;
 
+        initView();
+
+        //友盟更新
+        UmengUpdateAgent.setUpdateCheckConfig(false);
+        UmengUpdateAgent.update(this);
+        MobclickAgent.updateOnlineConfig(this);
+    }
+
+    private void initView() {
         fragMana = getFragmentManager();
 
         list = (HorizontalListView) findViewById(R.id.listView);
@@ -72,6 +81,8 @@ public class MainActivity extends BaseActivity {
         btnRefresh = (Button)findViewById(R.id.btn_refresh);
         topbar = (FrameLayout) findViewById(R.id.topbar);
         ivNew = (ImageView) findViewById(R.id.iv_new);
+        ivLeft = (ImageView) findViewById(R.id.iv_left);
+        ivRight = (ImageView) findViewById(R.id.iv_right);
 
         fragNopic = new NopicFragment();
         fragSMS = new SMSFragment();
@@ -88,16 +99,13 @@ public class MainActivity extends BaseActivity {
         iv.setOnClickListener(clickListener);
         btnWifi.setOnClickListener(clickListener);
         btnRefresh.setOnClickListener(clickListener);
+        ivLeft.setOnClickListener(clickListener);
+        ivRight.setOnClickListener(clickListener);
 
         if (photos.size() > 0)
             loader.displayImage("file://" + photos.get(0).path, iv, ImageHelper.options);
         else
             iv.setImageResource(R.drawable.bg_nopic);
-
-        //友盟更新
-        UmengUpdateAgent.setUpdateCheckConfig(false);
-        UmengUpdateAgent.update(this);
-        MobclickAgent.updateOnlineConfig(this);
     }
 
     private AdapterView.OnItemClickListener itListener = new AdapterView.OnItemClickListener() {
@@ -136,6 +144,13 @@ public class MainActivity extends BaseActivity {
            else if (view == btnRefresh){
                BaseApp.getInstance().service.startManual();
            }
+           else if (view == ivLeft){
+                manager.previous();
+           }
+           else if (view == ivRight){
+                manager.next();
+           }
+
         }
     };
 
@@ -228,6 +243,12 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);
+
+        if (Tools.isWifiConnected(this)){
+            btnWifi.setBackgroundResource(R.drawable.selector_btn_wifi_con);
+        }else{
+            btnWifi.setBackgroundResource(R.drawable.selector_btn_wifi_nocon);
+        }
     }
 
     @Override

@@ -81,8 +81,8 @@ public class BaseApp extends Application {
         int nMonth = now.get(Calendar.MONTH) + 1;
         int nDate = now.get(Calendar.DATE);
 
-        if (hour > startH && min > startM)
-            now.add(Calendar.DATE, 1);
+        //无论如何都加一天，因为开机是第二天的事
+        now.add(Calendar.DATE, 1);
         int pYear = now.get(Calendar.YEAR);
         int pMonth = now.get(Calendar.MONTH) + 1;
         int pDate = now.get(Calendar.DATE);

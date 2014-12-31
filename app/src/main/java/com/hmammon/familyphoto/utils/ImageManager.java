@@ -34,7 +34,7 @@ public class ImageManager {
         this.photos = photos;
     }
 
-    private void next(){
+    public void next(){
         current++;
         if (current > photos.size() - 1) current = 0;
         display(current);
@@ -42,7 +42,10 @@ public class ImageManager {
     }
 
     public void previous(){
-
+        current--;
+        if (current < 0) current = photos.size() - 1;
+        display(current);
+        activity.lightView(current);
     }
 
     public void start(){
