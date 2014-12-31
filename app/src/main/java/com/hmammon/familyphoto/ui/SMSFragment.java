@@ -1,12 +1,12 @@
 package com.hmammon.familyphoto.ui;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,7 +15,6 @@ import com.hmammon.familyphoto.R;
 import com.hmammon.familyphoto.http.HttpHelper;
 import com.hmammon.familyphoto.utils.BaseApp;
 import com.hmammon.familyphoto.utils.BaseFragment;
-import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -107,13 +106,18 @@ public class SMSFragment extends BaseFragment implements View.OnClickListener{
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
             super.onSuccess(statusCode, headers, response);
-            showToast("发送成功!");
+            showDialog("提示", "发送成功", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    btnSkip.performClick();
+                }
+            });
         }
 
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
             super.onFailure(statusCode, headers, responseString, throwable);
-            showToast("网络错误" + statusCode);
+            showDialog("提示", "发送失败,网络错误 " + statusCode, null);
         }
     };
 
