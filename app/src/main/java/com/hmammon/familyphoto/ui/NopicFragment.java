@@ -15,7 +15,7 @@ import com.hmammon.familyphoto.R;
 public class NopicFragment extends BaseFragment implements View.OnClickListener{
 
     private View base;
-    private View btnWifi;
+    private View btnWifi, btnExit;
     private MainActivity activity;
 
     @Override
@@ -31,8 +31,10 @@ public class NopicFragment extends BaseFragment implements View.OnClickListener{
         activity = (MainActivity) getActivity();
 
         btnWifi = view.findViewById(R.id.btn_wifi);
+        btnExit = view.findViewById(R.id.btn_exit);
         base = view.findViewById(R.id.base);
         btnWifi.setOnClickListener(this);
+        btnExit.setOnClickListener(this);
         base.setOnClickListener(this);
         return view;
     }
@@ -42,8 +44,11 @@ public class NopicFragment extends BaseFragment implements View.OnClickListener{
         if (view == base);
         if (view == btnWifi){
             FragmentTransaction trans = getActivity().getFragmentManager().beginTransaction();
-            trans.remove(activity.fragNopic);
             trans.add(R.id.container, activity.fragWifi).commit();
+        }
+        if (view == btnExit){
+            FragmentTransaction trans = getActivity().getFragmentManager().beginTransaction();
+            trans.remove(activity.fragNopic).commit();
         }
     }
 }

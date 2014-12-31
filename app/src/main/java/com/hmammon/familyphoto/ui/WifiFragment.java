@@ -99,8 +99,6 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener
         tvWifi = (TextView) view.findViewById(R.id.tv_wifi);
         if (!SPHelper.isFirst())
             btnConnect.performClick();
-        else
-            btnExit.setVisibility(View.GONE);
 
         return view;
     }
