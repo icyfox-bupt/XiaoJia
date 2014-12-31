@@ -15,6 +15,7 @@ import com.hmammon.familyphoto.R;
 import com.hmammon.familyphoto.http.HttpHelper;
 import com.hmammon.familyphoto.utils.BaseApp;
 import com.hmammon.familyphoto.utils.BaseFragment;
+import com.hmammon.familyphoto.utils.SPHelper;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -33,6 +34,7 @@ public class SMSFragment extends BaseFragment implements View.OnClickListener{
     private Button btnSend, btnSkip;
     private EditText etPhone;
     private View base;
+    private final long TIME = 1000L * 10 * 60;
     InputMethodManager imm;
 
     @Override
@@ -62,7 +64,9 @@ public class SMSFragment extends BaseFragment implements View.OnClickListener{
         }
 
         if (view == btnSend){
-            sendSMS();
+            if (System.currentTimeMillis() - SPHelper.getSMSTime() > TIME)
+                sendSMS();
+            else showToast("发送频率过高,请稍候");
         }
 
         if (view == btnSkip){
@@ -83,8 +87,8 @@ public class SMSFragment extends BaseFragment implements View.OnClickListener{
            params.add("account", phone);
            params.add("deviceId", BaseApp.getDeviceId());
            HttpHelper.post(HttpHelper.INVITE, params, handler);
+           btnSend.setEnabled(false);
        }
-
     }
 
     /**
@@ -106,10 +110,12 @@ public class SMSFragment extends BaseFragment implements View.OnClickListener{
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
             super.onSuccess(statusCode, headers, response);
+            btnSend.setEnabled(true);
             showDialog("提示", "发送成功", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     btnSkip.performClick();
+                    SPHelper.setSMSTime();
                 }
             });
         }
@@ -117,6 +123,7 @@ public class SMSFragment extends BaseFragment implements View.OnClickListener{
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
             super.onFailure(statusCode, headers, responseString, throwable);
+            btnSend.setEnabled(true);
             showDialog("提示", "发送失败,网络错误 " + statusCode, null);
         }
     };

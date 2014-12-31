@@ -26,4 +26,13 @@ public class SPHelper {
     public static String getOffTime(){
         return sp.getString("locktime", "");
     }
+
+    public static void setSMSTime(){
+        editor.putLong("smstime", System.currentTimeMillis());
+        editor.commit();
+    }
+
+    public static long getSMSTime(){
+        return sp.getLong("smstime", 0L);
+    }
 }

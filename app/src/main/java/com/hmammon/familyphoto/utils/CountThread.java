@@ -28,6 +28,7 @@ public class CountThread extends Thread {
             }
             count--;
             Log.i("th", "count " + count);
+            if (msg != 0) break;
         }
             //do toggle
             Log.i("th", "toggle here!");
