@@ -184,6 +184,8 @@ public class MainActivity extends BaseActivity {
      * 打开 or 关闭底部快速选择框
      */
     private void toggle(){
+        checkNet();
+
         Point size = Tools.getScreenSize(this);
         int wHeight = size.y;
 
@@ -257,11 +259,7 @@ public class MainActivity extends BaseActivity {
         super.onResume();
         MobclickAgent.onResume(this);
 
-        if (Tools.isWifiConnected(this)){
-            btnWifi.setBackgroundResource(R.drawable.selector_btn_wifi_con);
-        }else{
-            btnWifi.setBackgroundResource(R.drawable.selector_btn_wifi_nocon);
-        }
+        checkNet();
 
         if(SPHelper.isFirst()){
             btnWifi.performClick();
@@ -270,7 +268,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-    Log.i("key", keyCode + " " +event);
     switch (keyCode){
         case KeyEvent.KEYCODE_DPAD_DOWN:
         case KeyEvent.KEYCODE_DPAD_UP:
@@ -306,53 +303,17 @@ public class MainActivity extends BaseActivity {
         adapter.setChecked(position);
         adapter.notifyDataSetChanged();
         list.invalidate();
+    }
 
-        /*
-        int top = list.getFirstVisiblePosition();
-        int bottom = list.getLastVisiblePosition();
-
-        View child1, child2, card1, card2, tmp1, tmp2;
-
-        //先设置已经变大的变小
-        if (bigItem >= top && bigItem <= bottom) {
-            child1 = list.getChildAt(bigItem - top);
-            card1 = child1.findViewById(R.id.card);
-            tmp1 = child1.findViewById(R.id.tmp);
-
-            Log.w("size1", child1.getMeasuredWidth() + " - " + child1.getMeasuredHeight() + " - " + card1.getMeasuredWidth() + " - " + card1.getMeasuredHeight()
-                    + " - " + tmp1.getMeasuredWidth() + " - " + tmp1.getMeasuredWidth());
-
-            FrameLayout.LayoutParams lp1 = (FrameLayout.LayoutParams) card1.getLayoutParams();
-            int smallSize = Tools.dp2px(this, 50);
-            lp1.width = smallSize;
-            lp1.height = smallSize;
-            card1.setLayoutParams(lp1);
-            child1.measure(-2, -2);
-
-            Log.w("size1", child1.getMeasuredWidth() + " - " + child1.getMeasuredHeight() + " - " + card1.getMeasuredWidth() + " - " + card1.getMeasuredHeight()
-                    + " - " + tmp1.getMeasuredWidth() + " - " + tmp1.getMeasuredWidth());
+    /**
+     * 检查网络是否可用
+     */
+    public void checkNet(){
+        if (Tools.isWifiConnected(this)){
+            btnWifi.setBackgroundResource(R.drawable.selector_btn_wifi_con);
+        }else{
+            btnWifi.setBackgroundResource(R.drawable.selector_btn_wifi_nocon);
         }
-
-        //再设置小的变大
-        child2 = list.getChildAt(position - top);
-        card2 = child2.findViewById(R.id.card);
-        tmp2 = child2.findViewById(R.id.tmp);
-
-        Log.w("size2", child2.getMeasuredWidth() + " - " + child2.getMeasuredHeight() + " - " + card2.getMeasuredWidth() + " - " + card2.getMeasuredHeight()
-                + " - " + tmp2.getMeasuredWidth() + " - " + tmp2.getMeasuredWidth());
-
-        FrameLayout.LayoutParams lp2 = (FrameLayout.LayoutParams) card2.getLayoutParams();
-        int bigSize = Tools.dp2px(this, 120);
-        lp2.width = bigSize;
-        lp2.height = bigSize;
-        card2.setLayoutParams(lp2);
-        child2.measure(-2, -2);
-
-        bigItem = position;
-
-        Log.w("size2", child2.getMeasuredWidth() + " - " + child2.getMeasuredHeight() + " - " + card2.getMeasuredWidth() + " - " + card2.getMeasuredHeight()
-                + " - " + tmp2.getMeasuredWidth() + " - " + tmp2.getMeasuredWidth());
-*/
     }
 
     public void setDownloading(boolean isDown, int type){
@@ -378,7 +339,7 @@ public class MainActivity extends BaseActivity {
      */
     private boolean isNew(Photo photo){
         long now = System.currentTimeMillis();
-        long aDay = 1000L * 24 * 60;
+        long aDay = 1000L * 24 * 60 * 60;
         return now - photo.savetime <= aDay;
     }
 

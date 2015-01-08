@@ -1,9 +1,7 @@
 package com.hmammon.familyphoto.utils;
 
-import android.app.Activity;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.hmammon.familyphoto.Photo;
@@ -11,7 +9,6 @@ import com.hmammon.familyphoto.ui.MainActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by icyfox on 2014/12/23.
@@ -39,6 +36,7 @@ public class ImageManager {
         if (current > photos.size() - 1) current = 0;
         display(current);
         activity.lightView(current);
+        activity.checkNet();
     }
 
     public void previous(){
@@ -46,6 +44,7 @@ public class ImageManager {
         if (current < 0) current = photos.size() - 1;
         display(current);
         activity.lightView(current);
+        activity.checkNet();
     }
 
     public void start(){

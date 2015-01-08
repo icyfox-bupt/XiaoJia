@@ -12,21 +12,15 @@ import com.hmammon.familyphoto.db.PhotoContract;
 import com.hmammon.familyphoto.db.PhotoDbHelper;
 import com.hmammon.familyphoto.http.GetNewPhoto;
 import com.hmammon.familyphoto.http.HttpHelper;
-import com.hmammon.familyphoto.http.UpdatePhoto;
 import com.hmammon.familyphoto.utils.BaseApp;
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
 
 import org.apache.http.Header;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 /**
  * Created by icyfox on 2014/12/1.
@@ -67,6 +61,7 @@ public class MyFileHandler extends FileAsyncHttpResponseHandler {
 
         //压缩图片
         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+        if (bitmap == null) return;
         Bitmap newBitmap = zoomBitmap(bitmap);
         bitmap.recycle();
         String thumb = savePhotoToSDCard(HttpHelper.SAVEPATH, "thumb_" + file.getName(), newBitmap);

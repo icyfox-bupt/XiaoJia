@@ -8,7 +8,7 @@ android {
         applicationId "com.hmammon.familyphoto"
         minSdkVersion 17
         targetSdkVersion 21
-        versionCode 13
+        versionCode 14
         versionName "1.0"
     }
     buildTypes {
@@ -28,3 +28,5 @@ dependencies {
     compile 'com.umeng.analytics:analytics:latest.integration'
     compile files('libs/umeng-update-v2.4.2.jar')
 }
+
+
