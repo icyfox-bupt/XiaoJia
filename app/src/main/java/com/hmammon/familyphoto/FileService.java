@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.hmammon.familyphoto.http.GetNewPhoto;
@@ -80,7 +79,7 @@ public class FileService extends Service {
         BaseApp.getInstance().activity.setDownloading(true, 0);
         BaseApp.getInstance().activity.manual = true;
         Log.i("down", "开始下载啦！" + now);
-        sp.edit().putLong(LASTTIME, now).commit();
+        sp.edit().putLong(LASTTIME, now).apply();
         new GetNewPhoto().start();
     }
 

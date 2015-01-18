@@ -2,20 +2,16 @@ package com.hmammon.familyphoto.utils;
 
 import android.app.Application;
 import android.content.Intent;
-import android.os.Build;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-import android.widget.Toast;
+import android.util.Log;
 
 import com.hmammon.familyphoto.FileService;
 import com.hmammon.familyphoto.http.HttpHelper;
 import com.hmammon.familyphoto.ui.MainActivity;
-import com.hmammon.familyphoto.utils.ImageHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -52,8 +48,24 @@ public class BaseApp extends Application {
     }
 
     public static String getDeviceId(){
-        String id = Build.SERIAL;
+        String id = getSerialNumber();
+        Log.i("id", id);
         return id;
+    }
+
+    /** 
+     * getSerialNumber 
+     * @return result is same to getSerialNumber1() */
+    public static String getSerialNumber(){
+        String serial = null;
+        try {
+            Class<?> c =Class.forName("android.os.SystemProperties");
+            Method get =c.getMethod("get",String.class);
+            serial = (String)get.invoke(c,"ro.serialno");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return serial;
     }
 
     /**
